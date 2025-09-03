@@ -1,0 +1,5 @@
+have dm's original spec (dm.txt)
+add my own clarification to the spec (spec.txt)
+words that carry a specific value (values.txt)
+
+then work on the lex/parse/interpret stuff
