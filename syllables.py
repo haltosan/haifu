@@ -3,7 +3,7 @@ import cmudict
 
 c_dict = cmudict.dict()
 
-def count(w) str -> int:
+def count(w: str) -> int:
     '''Count syllables in a word'''
     # based on https://datascience.stackexchange.com/a/24865
     if w in c_dict:
