@@ -1,0 +1,1 @@
+When Celestial Bureaucrat Control words are interpreted, the Bureaucrat does not automatically ascend. Otherwise, the Bureaucrat will ascend after each word is interpreted.

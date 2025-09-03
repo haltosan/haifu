@@ -3,4 +3,5 @@ add my own clarification to the spec (spec.txt)
 reserved words (reserved.txt)
 
 write basic program using modified syntax (examples/123-simplified.txt)
+write interpreter for the basic level (interpret.py)
 then work on the lex/parse/interpret stuff
