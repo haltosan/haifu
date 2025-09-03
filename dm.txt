@@ -22,6 +22,7 @@ must be ballanced
 yin - even numbers
 yang - odd numbers
 fp is rounded away from 0 (1.2 is yin, -2.3 is yang)
+when returned, use some int of the correct type (implementation specific)
 
 elements:
 earth, fire, water, wood, metal

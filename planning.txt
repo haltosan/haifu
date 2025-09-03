@@ -1,5 +1,6 @@
 have dm's original spec (dm.txt)
 add my own clarification to the spec (spec.txt)
-words that carry a specific value (values.txt)
+reserved words (reserved.txt)
 
+write basic program using modified syntax (examples/123-simplified.txt)
 then work on the lex/parse/interpret stuff

@@ -1,0 +1,25 @@
+nirvana
+number
+up
+number
+up
+number
+3
+2
+1
+
+-execution-
+	b[1] d[1]
+nop b[2] d[1]
+nop b[3] d[1]
+num	b[n] d[1]
+				1
+up	b[u] d[2]
+	,b-1 is number so default to up 1,
+num	b[n] d[2]
+				2
+up	b[u] d[3]
+	,b-1 is number so default to up 1,
+num	b[n] d[3]
+				3
+nirvana

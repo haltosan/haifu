@@ -23,8 +23,8 @@ promote/more/increase/wax	rise from d's val, nop on no val
 demote/less/reduce/wane		descend from d's val, nop on no val, d drops if needed
 blossom/flower/petal		read current rung, if yin descend from d's val, if yang ascend from d's val, else nop
 
-rise/float/ascend/up		rise from [b-1]'s val, else rise 1
-fall/drop/descend/down		descend from [b-1]'s val, else descend 1
+rise/float/ascend/up		rise from [b-1]'s val, if no num/var then rise 1
+fall/drop/descend/down		descend from [b-1]'s val, if no num/var then descend 1
 
 listen/hear/see		read number/unicode char to bottom, if no input take [b+1] and put it on bottom
 speak/say/draw		output d's val as unicode char, if outside legal unicode or noval then nop
