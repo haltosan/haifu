@@ -1,1 +1,36 @@
 When Celestial Bureaucrat Control words are interpreted, the Bureaucrat does not automatically ascend. Otherwise, the Bureaucrat will ascend after each word is interpreted.
+Punctuation sits in its own rank in the Bureaucracy.
+Words are split on ' '.
+
+
+=Internal Data=
+
+-interpreter level-
+string literals:
+ heaven/nirvana/enlightenment/harmony
+ promote/more/increase/wax
+ demote/less/reduce/wane
+ blossom/flower/petal
+ rise/float/ascend/up
+ fall/drop/descend/down
+ listen/hear/see
+ speak/say/draw
+ count/number/age
+ create/produce/build
+ destroy/damage/kill
+ fear/hate/doubt
+ love/desire/regard
+ become/reach/achieve
+ like/as/is/resemble
+ tomorrow/today/yesterday
+ negative/not/deny
+ operate/examine/study
+
+number literals:
+ ints
+
+punctuation:
+ '/'
+
+variables:
+ '<name> <type>'

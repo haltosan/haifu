@@ -1,0 +1,57 @@
+- goal -
+1 + 2, print
+2 - 3, print
+3 * 4, print
+4 / 5, print
+
+- program -
+/
+v1:earth =
+    1
+    /
+/
+v2:metal =
+    2
+    /
+/
+v3:wood =
+    3
+    /
+/
+v4:metal =
+    4
+    /
+/
+v5:earth =
+    5
+    /
+v1
+v2
+v3
+v4
+v5
+#jump past var declarations
+up (v1)
+op (v1+=v2)
+number (v1)
+up (v2)
+op (v2-=v3)
+number (v2)
+up (v3)
+op (v3*=v4)
+number (v3)
+up (v4)
+op (v4/=v5)
+number (v4)
+nirvana
+
+
+
+v1 += v2
+print v1
+v2 -= v3
+print v2
+v3 *= v4
+print v3
+v4 /= v5
+print v4

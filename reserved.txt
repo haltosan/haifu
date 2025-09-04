@@ -39,7 +39,7 @@ become/reach/achieve		round fp to striving, inc positive int, dec negative int, 
 like/as/is/resemble			set [b-1]'s var = 1st value (literal/var) found by d scanning down, if no val or variable then don't move d and use 0
 tomorrow/today/yesterday	???
 negative/not/deny			flip sign at d
-operate/examine/study		op at d (n) and [d+1] (a) and store in d or d's var (no element change), if not number then nop
+operate/examine/study		op at d (b) and [d+1] (a) and store in d or d's var (no element change), if not number then nop
 
 -relationship-	-op-
 B creates A		A+B

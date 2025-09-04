@@ -18,7 +18,7 @@ must not be vulgar
 
 yin/yang:
 basically binary
-must be ballanced
+must be balanced
 yin - even numbers
 yang - odd numbers
 fp is rounded away from 0 (1.2 is yin, -2.3 is yang)
@@ -95,7 +95,7 @@ plural/singular are the same variable (tree/trees)
 when placed in the bureaucracy, it is the variable and not just the value
 	can be copied, each will point to the same variable
 can contain instructions
-<puncuation> <variable name> <definition>* <punctuation / variable name>
+<punctuation> <variable name> <definition>* <punctuation / variable name>
 
 
 comments:
