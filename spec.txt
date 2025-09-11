@@ -1,6 +1,7 @@
 When Celestial Bureaucrat Control words are interpreted, the Bureaucrat does not automatically ascend. Otherwise, the Bureaucrat will ascend after each word is interpreted.
 Punctuation sits in its own rank in the Bureaucracy.
 Words are split on ' '.
+Variables with data of length 1 of type int become the single value. Longer variables will be lists.
 
 
 =Internal Data=
@@ -34,3 +35,5 @@ punctuation:
 
 variables:
  '<name> <type>'
+ name here is specified by the word used at runtime
+ type here is the type determined at runtime
