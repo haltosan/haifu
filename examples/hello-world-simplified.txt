@@ -1,0 +1,44 @@
+h
+e
+l
+o
+' '
+w
+o
+r
+l
+d
+
+say  # h
+up
+say  # e
+up
+say  # l
+say  # l
+up
+say  # o
+up
+say  # ' '
+up
+say  # w
+up
+say  # o
+up
+say  # r
+up
+say  # l
+up
+say  # d
+heaven
+
+- unicode -
+h 104
+e 101
+l 108
+o 111
+  32
+w 119
+o 111
+r 114
+l 108
+d 100

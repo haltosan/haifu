@@ -89,11 +89,19 @@ def run(bureaucracy, debug=False):
 
         elif rung in ['count', 'number', 'age']:
             dprint('number')
-            drung = bureaucracy[delegate]
-            if type(drung) is int:
-                print(bureaucracy[delegate])
-            elif ' ' in drung:
-                print(data[drung.split(' ')[0]][1])
+            d_rung = bureaucracy[delegate]
+            if type(d_rung) is int:
+                print(d_rung, end='')
+            elif ' ' in d_rung:
+                print(data[d_rung.split(' ')[0]][1], end='')
+
+        elif rung in ['speak', 'say', 'draw']:
+            dprint('say')
+            d_rung = bureaucracy[delegate]
+            if type(d_rung) is int:
+                print(chr(d_rung), end='')
+            elif ' ' in d_rung:
+                print(chr(data[d_rung.split(' ')[0][1]]), end='')
 
         elif rung == '/':
             dprint('punc')
@@ -166,8 +174,22 @@ if __name__ == '__main__':
             'up', 'study', 'age',  # v3
             'up', 'study', 'age',  # v4
             'nirvana']
+    hello_world = [104, 101, 108, 111, 32,
+                   119, 111, 114, 108, 100, 10,
+                   'say', 'up',  # h
+                   'say', 'up',  # e
+                   'say', 'say', 'up',  # ll
+                   'say', 'up',  # o
+                   'say', 'up',
+                   'say', 'up',  # w
+                   'say', 'up',  # o
+                   'say', 'up',  # r
+                   'say', 'up',  # l
+                   'say', 'up',  # d
+                   'say', 'up',  # \n
+                   ]
     #programs = [just_exit, print_123, math]
-    programs = [math]
+    programs = [hello_world]
 
     for p in programs:
         print('--------------')
