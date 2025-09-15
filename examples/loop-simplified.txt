@@ -1,0 +1,12 @@
+loop:
+print 1
+goto loop
+
+
+
+1  # print val
+3 #loop jump back
+fall #loop start
+count
+rise
+demote

@@ -1,6 +1,8 @@
 from math import ceil, floor
+#TODO use enums for tokens instead of strings
 
 data = dict()
+#TODO make structs for variables instead of strings
 
 YIN = 2
 YANG = 1
@@ -74,18 +76,54 @@ def run(bureaucracy, debug=False):
             dprint('halt')
             return
 
-        elif rung in ['rise', 'float', 'ascend', 'up']:
-            dprint('up')
+        elif rung in ['rise', 'float', 'ascend', 'up',
+                      'fall', 'drop', 'descend', 'down']:
+            if rung in ['fall', 'drop', 'descend', 'down']:
+                dprint('fall')
+                sign = -1
+            else:
+                dprint('up')
+                sign = 1
+
             lower = bureaucracy[bureaucrat - 1]
             if type(lower) is int:
-                delegate += lower
+                delegate += lower * sign
             elif ' ' in lower:
                 var_name = lower.split(' ')[0]
                 var_data = data[var_name][1]
                 if type(var_data) is int:
-                    delegate += var_data
+                    delegate += var_data * sign
             else:
-                delegate += 1
+                delegate += 1 * sign
+
+            if delegate < 0:
+                delegate = 0
+            elif delegate > bureaucrat:
+                delegate = bureaucrat
+
+        elif rung in ['demote', 'less', 'reduce', 'wane']:
+            dprint('demote')
+            d_rung = bureaucracy[delegate]
+            if type(d_rung) is int:
+                diff = d_rung
+            elif ' ' in d_rung:
+                var_name = d_rung.split(' ')[0]
+                var_data = data[var_name][1]
+                if type(var_data) is int:
+                    diff = var_data
+                else:
+                    diff = 0
+            else:
+                diff = 0
+            bureaucrat -= diff
+
+            if bureaucrat < 0:
+                bureaucrat = 0
+            elif bureaucrat >= len(bureaucracy):
+                return
+
+            if delegate > bureaucrat:
+                delegate = bureaucrat
 
         elif rung in ['count', 'number', 'age']:
             dprint('number')
@@ -188,8 +226,14 @@ if __name__ == '__main__':
                    'say', 'up',  # d
                    'say', 'up',  # \n
                    ]
+    loop = [1,  # print val
+            4,  # loop jump back
+            'fall',
+            'count',
+            'rise',
+            'demote']
     #programs = [just_exit, print_123, math]
-    programs = [hello_world]
+    programs = [loop]
 
     for p in programs:
         print('--------------')
