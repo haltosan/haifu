@@ -32,6 +32,14 @@ class TokenType(Enum):
     VAR = 19
 
 
+class ElementType(Enum):
+    WOOD = 0
+    FIRE = 1
+    EARTH = 2
+    METAL = 3
+    WATER = 4
+
+
 class Token:
     t:TokenType = None
     value = None
@@ -43,9 +51,9 @@ class Token:
 
 class VariableToken:
     name:str = None
-    init_element = None
+    init_element:ElementType = None
 
-    def __init__(self, name, init_element='earth'):
+    def __init__(self, name, init_element:ElementType=ElementType.EARTH):
         self.name = name
         self.init_element = init_element
 
@@ -76,32 +84,32 @@ def yin_or_yang(x) -> int:
 # TODO use enums for elements instead of strings
 def element_relationship(element_a, element_b=None, relationship_type=None):
     create_relationship = {
-        'earth': 'metal',
-        'metal': 'water',
-        'water': 'wood',
-        'wood': 'fire',
-        'fire': 'earth'
+        ElementType.EARTH: ElementType.METAL,
+        ElementType.METAL: ElementType.WATER,
+        ElementType.WATER: ElementType.WOOD,
+        ElementType.WOOD: ElementType.FIRE,
+        ElementType.FIRE: ElementType.EARTH
     }
     destroy_relationship = {
-        'earth': 'water',
-        'water': 'fire',
-        'fire': 'metal',
-        'metal': 'wood',
-        'wood': 'earth'
+        ElementType.EARTH: ElementType.WATER,
+        ElementType.WATER: ElementType.FIRE,
+        ElementType.FIRE: ElementType.METAL,
+        ElementType.METAL: ElementType.WOOD,
+        ElementType.WOOD: ElementType.EARTH
     }
     love_relationship = {
-        'earth': 'fire',
-        'fire': 'wood',
-        'wood': 'water',
-        'water': 'metal',
-        'metal': 'earth'
+        ElementType.EARTH: ElementType.FIRE,
+        ElementType.FIRE: ElementType.WOOD,
+        ElementType.WOOD: ElementType.WATER,
+        ElementType.WATER: ElementType.METAL,
+        ElementType.METAL: ElementType.EARTH
     }
     fear_relationship = {
-        'earth': 'wood',
-        'wood': 'metal',
-        'metal': 'fire',
-        'fire': 'water',
-        'water': 'earth'
+        ElementType.EARTH: ElementType.WOOD,
+        ElementType.WOOD: ElementType.METAL,
+        ElementType.METAL: ElementType.FIRE,
+        ElementType.FIRE: ElementType.WATER,
+        ElementType.WATER: ElementType.EARTH
     }
     relationship = {
         'create':create_relationship,
@@ -284,15 +292,15 @@ if __name__ == '__main__':
                  Token(TokenType.COUNT), Token(TokenType.RISE),
                  Token(TokenType.COUNT), Token(TokenType.RISE),
                  Token(TokenType.COUNT), Token(TokenType.HEAVEN)]
-    math = [Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v1', 'earth')),
+    math = [Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v1', ElementType.EARTH)),
             Token(TokenType.INT, 1), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v2', 'metal')),
+            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v2', ElementType.METAL)),
             Token(TokenType.INT, 2), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v3', 'wood')),
+            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v3', ElementType.WOOD)),
             Token(TokenType.INT, 3), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v4', 'metal')),
+            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v4', ElementType.METAL)),
             Token(TokenType.INT, 4), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v5', 'earth')),
+            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v5', ElementType.EARTH)),
             Token(TokenType.INT, 5), Token(TokenType.PUNC),
             Token(TokenType.VAR, VariableToken('v1')), Token(TokenType.VAR, VariableToken('v2')),
             Token(TokenType.VAR, VariableToken('v3')), Token(TokenType.VAR, VariableToken('v4')),
@@ -332,8 +340,8 @@ if __name__ == '__main__':
                       Token(TokenType.VAR, VariableToken('print')),
                       Token(TokenType.VAR, VariableToken('print')),
                       Token(TokenType.VAR, VariableToken('print'))]
-    #programs = [just_exit, print_123, math, hello_world]
-    programs = [print_function]
+    programs = [just_exit, print_123, math, hello_world, print_function]
+    #programs = [print_function]
 
     for p in programs:
         print('--------------')
