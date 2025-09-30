@@ -1,9 +1,13 @@
 from math import ceil, floor
 from enum import Enum
+import typing
+# TODO use typing hints properly on everything
+# TODO use docstrings
+# TODO formatting
+
 #TODO use enums for tokens instead of strings
 # double check the changes actually did something
 
-data = dict()
 #TODO make structs for variables instead of strings
 
 YIN = 2
@@ -42,17 +46,39 @@ class Token:
         self.value = value
 
 
-def strive(x):
-    #TODO incomplete
+class VariableToken:
+    name:str = None
+    init_element = None
+
+    def __init__(self, name, init_element='earth'):
+        self.name = name
+        self.init_element = init_element
+
+
+class VariableStruct:
+    element = None
+    value = None
+
+    def __init__(self, value, element):
+        self.element = element
+        self.value = value
+
+
+data: typing.Dict[str, VariableStruct] = dict()
+
+
+def strive_num(x: typing.Union[int, float]) -> int:
+    if type(x) is int:
+        return x
     if x > 0:
         return ceil(x)
     return floor(x)
 
 def yin_or_yang(x) -> int:
-    if type(x) is float:
-        x = strive(x)
+    x = strive_num(x)
     return YIN if x % 2 == 0 else YANG
 
+# TODO use enums for elements instead of strings
 def element_relationship(element_a, element_b=None, relationship_type=None):
     create_relationship = {
         'earth': 'metal',
@@ -119,25 +145,17 @@ def run(bureaucracy, debug=False):
                     sign = 1
 
                 lower:Token = bureaucracy[bureaucrat - 1]
+                diff:int = 1
                 match lower.t:
                     case TokenType.INT:
-                        delegate += lower.value * sign
+                        diff = lower.value
                     case TokenType.VAR:
-                        #TODO implement
-                        pass
-                    case _:
-                        delegate += 1 * sign
-                # elif ' ' in lower:
-                #     var_name = lower.split(' ')[0]
-                #     var_data = data[var_name][1]
-                #     if type(var_data) is int:
-                #         delegate += var_data * sign
-
-                if delegate < 0:  # TODO move clamping to end of loop
-                    delegate = 0
-                elif delegate > bureaucrat:
-                    delegate = bureaucrat
-                continue
+                        var_name:str = lower.value.name
+                        var:VariableStruct = data[var_name]
+                        value = var.value
+                        if isinstance(value, (int, float)):
+                            diff = strive_num(value)
+                delegate += diff * sign
 
             case TokenType.PROMOTE | TokenType.DEMOTE:
                 dprint('promote/demote')
@@ -146,30 +164,17 @@ def run(bureaucracy, debug=False):
                 else:
                     sign = 1
                 d_rung:Token = bureaucracy[delegate]
-                diff = 0
+                diff:int = 0
                 match d_rung.t:
                     case TokenType.INT:
-                        diff = d_rung
+                        diff = d_rung.value
                     case TokenType.VAR:
-                        #TODO implement
-                        diff = 0
-                        # var_name = d_rung.split(' ')[0]
-                        # var_data = data[var_name][1]
-                        # if type(var_data) is int:
-                        #     diff = var_data
-                        # else:
-                        #     diff = 0
-                    case _:
-                        diff = 0
-                bureaucrat += diff * sign  # TODO make consistent
-
-                if bureaucrat < 0:
-                    bureaucrat = 0
-                elif bureaucrat >= len(bureaucracy):
-                    return
-
-                if delegate > bureaucrat:
-                    delegate = bureaucrat
+                        var_name:str = d_rung.value.name
+                        var:VariableStruct = data[var_name]
+                        value = var.value
+                        if isinstance(value, (int, float)):
+                            diff = strive_num(value)
+                bureaucrat += diff * sign
 
             case TokenType.COUNT | TokenType.SPEAK:
                 dprint('print')
@@ -185,33 +190,41 @@ def run(bureaucracy, debug=False):
                     case TokenType.INT:
                         print(cast(d_rung.value), end='')
                     case TokenType.VAR:
-                        # TODO implement
-                        pass
-                # elif ' ' in d_rung:
-                #     print(data[d_rung.split(' ')[0]][1], end='')
+                        var_name:str = d_rung.value.name
+                        var:VariableStruct = data[var_name]
+                        value = var.value
+                        if isinstance(value, (int, float)):
+                            print(cast(value), end='')
 
             case TokenType.PUNC:
                 dprint('punc')
-                data_tmp = []
+                data_tmp: typing.List[Token] = []
                 bureaucrat += 1
-                # TODO redo with new var structure
-                var_name, var_type = bureaucracy[bureaucrat].split(' ')
+                rung:Token = bureaucracy[bureaucrat]
+                var:VariableToken = rung.value
+                var_name:str = var.name
+                var_type = var.init_element
                 bureaucrat += 1
-                while (rung := bureaucracy[bureaucrat]) not in ['/', var_name]:
+                rung:Token = bureaucracy[bureaucrat]
+                while rung.t != TokenType.PUNC:
                     data_tmp.append(rung)
                     bureaucrat += 1
+                    rung:Token = bureaucracy[bureaucrat]
                 if len(data_tmp) == 1:
-                    data_tmp = data_tmp[0]
-                data[var_name] = [var_type, data_tmp]
+                    if data_tmp[0].t == TokenType.INT:
+                        data_tmp = data_tmp[0].value
+                data[var_name] = VariableStruct(data_tmp, var_type)
 
             case TokenType.OPERATE:
                 dprint('operate')
                 b = bureaucracy[delegate]
                 a = bureaucracy[delegate + 1]
                 result = op(a, b)
-                #TODO new var structure
-                b_name = b.split(' ')[0]
-                data[b_name][1] = result
+                if result is None:
+                    continue
+                b_var:VariableToken = b.value
+                b_name = b_var.name
+                data[b_name].value = result
 
             case TokenType.INT:
                 dprint('int literal')
@@ -223,17 +236,29 @@ def run(bureaucracy, debug=False):
             case _:
                 dprint("other")
 
+        if delegate < 0:
+            delegate = 0
+        if bureaucrat < 0:
+            bureaucrat = 0
+        if delegate > bureaucrat:
+            delegate = bureaucrat
+        if bureaucrat >= len(bureaucracy):
+            return
         bureaucrat += 1
 
-def op(a, b):
+def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
     global data
-    a_name = a.split(' ')[0]
-    b_name = b.split(' ')[0]
-    a_type, a_val = data[a_name]
+    a_name:str = a.value.name
+    b_name:str = b.value.name
+    a_var:VariableStruct = data[a_name]
+    a_type = a_var.element
+    a_val = a_var.value
     if not isinstance(a_val, (int, float)):
         return None
-    b_type, b_val = data[b_name]
-    if not isinstance(b_val, (int, float)):
+    b_var = data[b_name]
+    b_type = b_var.element
+    b_val = b_var.value
+    if not isinstance(b_var.value, (int, float)):
         return None
     match element_relationship(b_type, a_type):
         case 'create':
@@ -255,19 +280,19 @@ if __name__ == '__main__':
                  Token(TokenType.COUNT), Token(TokenType.RISE),
                  Token(TokenType.COUNT), Token(TokenType.RISE),
                  Token(TokenType.COUNT), Token(TokenType.HEAVEN)]
-    math = [Token(TokenType.PUNC), Token(TokenType.VAR, 'v1 earth'),
+    math = [Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v1', 'earth')),
             Token(TokenType.INT, 1), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, 'v2 metal'),
+            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v2', 'metal')),
             Token(TokenType.INT, 2), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, 'v3 wood'),
+            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v3', 'wood')),
             Token(TokenType.INT, 3), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, 'v4 metal'),
+            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v4', 'metal')),
             Token(TokenType.INT, 4), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, 'v5 earth'),
+            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v5', 'earth')),
             Token(TokenType.INT, 5), Token(TokenType.PUNC),
-            Token(TokenType.VAR, 'v1 earth'), Token(TokenType.VAR, 'v2 metal'),
-            Token(TokenType.VAR, 'v3 wood'), Token(TokenType.VAR, 'v4 metal'),
-            Token(TokenType.VAR, 'v5 earth'),
+            Token(TokenType.VAR, VariableToken('v1')), Token(TokenType.VAR, VariableToken('v2')),
+            Token(TokenType.VAR, VariableToken('v3')), Token(TokenType.VAR, VariableToken('v4')),
+            Token(TokenType.VAR, VariableToken('v5')),
             Token(TokenType.INT, 20),
             Token(TokenType.RISE), Token(TokenType.OPERATE), Token(TokenType.COUNT),  # v1
             Token(TokenType.RISE), Token(TokenType.OPERATE), Token(TokenType.COUNT),  # v2
@@ -280,7 +305,7 @@ if __name__ == '__main__':
                    Token(TokenType.INT, 108), Token(TokenType.INT, 100), Token(TokenType.INT, 10),
                    Token(TokenType.SPEAK), Token(TokenType.RISE),  # h
                    Token(TokenType.SPEAK), Token(TokenType.RISE),  # e
-                   Token(TokenType.SPEAK), Token(TokenType.RISE), Token(TokenType.RISE),  # ll
+                   Token(TokenType.SPEAK), Token(TokenType.SPEAK), Token(TokenType.RISE),  # ll
                    Token(TokenType.SPEAK), Token(TokenType.RISE),  # o
                    Token(TokenType.SPEAK), Token(TokenType.RISE),
                    Token(TokenType.SPEAK), Token(TokenType.RISE),  # w
@@ -296,8 +321,8 @@ if __name__ == '__main__':
             Token(TokenType.COUNT),
             Token(TokenType.RISE),
             Token(TokenType.DEMOTE)]
-    #programs = [just_exit, print_123, math]
-    programs = [loop]
+    programs = [just_exit, print_123, math, hello_world]
+    #programs = [loop]
 
     for p in programs:
         print('--------------')

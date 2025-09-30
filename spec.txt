@@ -2,7 +2,8 @@ When Celestial Bureaucrat Control words are interpreted, the Bureaucrat does not
 Punctuation sits in its own rank in the Bureaucracy.
 Words are split on ' '.
 Variables with data of length 1 of type int become the single value. Longer variables will be lists.
-Print commands (say, age) will not output a newline
+Print commands (say, age) will not output a newline.
+Print commands (say, age) will only output single values.
 
 
 =Internal Data=
