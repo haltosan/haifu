@@ -1,6 +1,7 @@
 from math import ceil, floor
 from enum import Enum
 import typing
+import sys
 # TODO use typing hints properly on everything
 # TODO use docstrings
 # TODO formatting
@@ -39,6 +40,13 @@ class ElementType(Enum):
     METAL = 3
     WATER = 4
 
+
+class ElementRelationship(Enum):
+    CREATE = 0
+    DESTROY = 1
+    FEAR = 2
+    LOVE = 3
+    SAME = 4
 
 class Token:
     t:TokenType = None
@@ -81,7 +89,6 @@ def yin_or_yang(x) -> int:
     x = strive_num(x)
     return YIN if x % 2 == 0 else YANG
 
-# TODO use enums for elements instead of strings
 def element_relationship(element_a, element_b=None, relationship_type=None):
     create_relationship = {
         ElementType.EARTH: ElementType.METAL,
@@ -112,10 +119,10 @@ def element_relationship(element_a, element_b=None, relationship_type=None):
         ElementType.WATER: ElementType.EARTH
     }
     relationship = {
-        'create':create_relationship,
-        'destroy':destroy_relationship,
-        'love':love_relationship,
-        'fear':fear_relationship
+        ElementRelationship.CREATE:create_relationship,
+        ElementRelationship.DESTROY:destroy_relationship,
+        ElementRelationship.LOVE:love_relationship,
+        ElementRelationship.FEAR:fear_relationship
     }
 
     a_b_relationship = {(a,relationship[t][a]):t for t in relationship for a in relationship[t]}
@@ -123,6 +130,34 @@ def element_relationship(element_a, element_b=None, relationship_type=None):
     if element_b is None:
         return relationship[relationship_type][element_a]
     return a_b_relationship[element_a, element_b]
+
+def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
+    global data
+    a_name:str = a.value.name
+    b_name:str = b.value.name
+    a_var:VariableStruct = data[a_name]
+    a_type = a_var.element
+    a_val = a_var.value
+    if not isinstance(a_val, (int, float)):
+        return None
+    b_var = data[b_name]
+    b_type = b_var.element
+    b_val = b_var.value
+    if not isinstance(b_var.value, (int, float)):
+        return None
+    match element_relationship(b_type, a_type):
+        case ElementRelationship.CREATE:
+            return a_val + b_val
+        case ElementRelationship.DESTROY:
+            return a_val - b_val
+        case ElementRelationship.FEAR:
+            return a_val / b_val
+        case ElementRelationship.LOVE:
+            return a_val * b_val
+        case _:
+            if yin_or_yang(a_val) == YANG and yin_or_yang(b_val) == YANG:
+                return YANG
+            return YIN
 
 def run(bureaucracy, debug=False):
     """expect program of form [lowest, ... highest]"""
@@ -132,7 +167,7 @@ def run(bureaucracy, debug=False):
     delegate = 0
     def dprint(txt):
         if debug:
-            print('\t', txt)
+            print('\t', txt, file=sys.stderr)
 
     while bureaucrat < len(bureaucracy):
         bureaucrat += 1
@@ -255,94 +290,3 @@ def run(bureaucracy, debug=False):
 
             case _:
                 dprint("other")
-
-
-
-def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
-    global data
-    a_name:str = a.value.name
-    b_name:str = b.value.name
-    a_var:VariableStruct = data[a_name]
-    a_type = a_var.element
-    a_val = a_var.value
-    if not isinstance(a_val, (int, float)):
-        return None
-    b_var = data[b_name]
-    b_type = b_var.element
-    b_val = b_var.value
-    if not isinstance(b_var.value, (int, float)):
-        return None
-    match element_relationship(b_type, a_type):
-        case 'create':
-            return a_val + b_val
-        case 'destroy':
-            return a_val - b_val
-        case 'fear':
-            return a_val / b_val
-        case 'love':
-            return a_val * b_val
-        case _:
-            if yin_or_yang(a_val) == YANG and yin_or_yang(b_val) == YANG:
-                return YANG
-            return YIN
-
-if __name__ == '__main__':
-    just_exit = [Token(TokenType.HEAVEN)]
-    print_123 = [Token(TokenType.INT, 1), Token(TokenType.INT, 2), Token(TokenType.INT, 3),
-                 Token(TokenType.COUNT), Token(TokenType.RISE),
-                 Token(TokenType.COUNT), Token(TokenType.RISE),
-                 Token(TokenType.COUNT), Token(TokenType.HEAVEN)]
-    math = [Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v1', ElementType.EARTH)),
-            Token(TokenType.INT, 1), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v2', ElementType.METAL)),
-            Token(TokenType.INT, 2), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v3', ElementType.WOOD)),
-            Token(TokenType.INT, 3), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v4', ElementType.METAL)),
-            Token(TokenType.INT, 4), Token(TokenType.PUNC),
-            Token(TokenType.PUNC), Token(TokenType.VAR, VariableToken('v5', ElementType.EARTH)),
-            Token(TokenType.INT, 5), Token(TokenType.PUNC),
-            Token(TokenType.VAR, VariableToken('v1')), Token(TokenType.VAR, VariableToken('v2')),
-            Token(TokenType.VAR, VariableToken('v3')), Token(TokenType.VAR, VariableToken('v4')),
-            Token(TokenType.VAR, VariableToken('v5')),
-            Token(TokenType.INT, 20),
-            Token(TokenType.RISE), Token(TokenType.OPERATE), Token(TokenType.COUNT),  # v1
-            Token(TokenType.RISE), Token(TokenType.OPERATE), Token(TokenType.COUNT),  # v2
-            Token(TokenType.RISE), Token(TokenType.OPERATE), Token(TokenType.COUNT),  # v3
-            Token(TokenType.RISE), Token(TokenType.OPERATE), Token(TokenType.COUNT),  # v4
-            Token(TokenType.HEAVEN)]
-    hello_world = [Token(TokenType.INT, 104), Token(TokenType.INT, 101), Token(TokenType.INT, 108),
-                   Token(TokenType.INT, 111), Token(TokenType.INT, 32),
-                   Token(TokenType.INT, 119), Token(TokenType.INT, 111), Token(TokenType.INT, 114),
-                   Token(TokenType.INT, 108), Token(TokenType.INT, 100), Token(TokenType.INT, 10),
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),  # h
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),  # e
-                   Token(TokenType.SPEAK), Token(TokenType.SPEAK), Token(TokenType.RISE),  # ll
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),  # o
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),  # w
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),  # o
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),  # r
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),  # l
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),  # d
-                   Token(TokenType.SPEAK), Token(TokenType.RISE),  # \n
-                   ]
-    loop = [Token(TokenType.INT, 1),  # print val
-            Token(TokenType.INT, 4),  # loop jump back
-            Token(TokenType.FALL),
-            Token(TokenType.COUNT),
-            Token(TokenType.RISE),
-            Token(TokenType.DEMOTE)]
-    print_function = [Token(TokenType.PUNC),
-                      Token(TokenType.VAR, VariableToken('print')),
-                      Token(TokenType.INT, 1), Token(TokenType.COUNT), Token(TokenType.HEAVEN),
-                      Token(TokenType.PUNC),
-                      Token(TokenType.VAR, VariableToken('print')),
-                      Token(TokenType.VAR, VariableToken('print')),
-                      Token(TokenType.VAR, VariableToken('print'))]
-    programs = [just_exit, print_123, math, hello_world, print_function]
-    #programs = [print_function]
-
-    for p in programs:
-        print('--------------')
-        run(p, debug=True)
