@@ -4,38 +4,5 @@ Words are split on ' '.
 Variables with data of length 1 of type int become the single value. Longer variables will be lists.
 Print commands (say, age) will not output a newline.
 Print commands (say, age) will only output single values.
+When the Celestial Bureaucrat encounters a variable that contains a list of instructions, the Bureaucrat interprets the instructions as if it was a new program. The Bureaucrat will return up a Bureaucracy on the 'heaven' instruction. Variable values and side effects will carry through.
 
-
-=Internal Data=
-
--interpreter level-
-string literals:
- heaven/nirvana/enlightenment/harmony
- promote/more/increase/wax
- demote/less/reduce/wane
- blossom/flower/petal
- rise/float/ascend/up
- fall/drop/descend/down
- listen/hear/see
- speak/say/draw
- count/number/age
- create/produce/build
- destroy/damage/kill
- fear/hate/doubt
- love/desire/regard
- become/reach/achieve
- like/as/is/resemble
- tomorrow/today/yesterday
- negative/not/deny
- operate/examine/study
-
-number literals:
- ints
-
-punctuation:
- '/'
-
-variables:
- '<name> <type>'
- name here is specified by the word used at runtime
- type here is the type determined at runtime

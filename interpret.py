@@ -5,11 +5,6 @@ import typing
 # TODO use docstrings
 # TODO formatting
 
-#TODO use enums for tokens instead of strings
-# double check the changes actually did something
-
-#TODO make structs for variables instead of strings
-
 YIN = 2
 YANG = 1
 
@@ -125,13 +120,22 @@ def run(bureaucracy, debug=False):
     """expect program of form [lowest, ... highest]"""
     global data
 
-    bureaucrat = 0
+    bureaucrat = -1  # deal with fence posting
     delegate = 0
     def dprint(txt):
         if debug:
             print('\t', txt)
 
     while bureaucrat < len(bureaucracy):
+        bureaucrat += 1
+        if delegate < 0:
+            delegate = 0
+        if bureaucrat < 0:
+            bureaucrat = 0
+        if delegate > bureaucrat:
+            delegate = bureaucrat
+        if bureaucrat >= len(bureaucracy):
+            return
         rung:Token = bureaucracy[bureaucrat]
         match rung.t:
             case TokenType.HEAVEN:
@@ -231,20 +235,20 @@ def run(bureaucracy, debug=False):
 
             case TokenType.VAR:
                 dprint('var literal')
-                #TODO implement
+                var_name:str = rung.value.name
+                if var_name not in data:
+                    continue
+                var:VariableStruct = data[var_name]
+                value = var.value
+                if isinstance(value, (int, float)):
+                    pass
+                elif type(value) is list:
+                    run(value, debug)
 
             case _:
                 dprint("other")
 
-        if delegate < 0:
-            delegate = 0
-        if bureaucrat < 0:
-            bureaucrat = 0
-        if delegate > bureaucrat:
-            delegate = bureaucrat
-        if bureaucrat >= len(bureaucracy):
-            return
-        bureaucrat += 1
+
 
 def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
     global data
@@ -321,8 +325,15 @@ if __name__ == '__main__':
             Token(TokenType.COUNT),
             Token(TokenType.RISE),
             Token(TokenType.DEMOTE)]
-    programs = [just_exit, print_123, math, hello_world]
-    #programs = [loop]
+    print_function = [Token(TokenType.PUNC),
+                      Token(TokenType.VAR, VariableToken('print')),
+                      Token(TokenType.INT, 1), Token(TokenType.COUNT), Token(TokenType.HEAVEN),
+                      Token(TokenType.PUNC),
+                      Token(TokenType.VAR, VariableToken('print')),
+                      Token(TokenType.VAR, VariableToken('print')),
+                      Token(TokenType.VAR, VariableToken('print'))]
+    #programs = [just_exit, print_123, math, hello_world]
+    programs = [print_function]
 
     for p in programs:
         print('--------------')
