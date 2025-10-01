@@ -5,6 +5,7 @@ import sys
 # TODO use typing hints properly on everything
 # TODO use docstrings
 # TODO formatting
+# TODO implement all instructions
 
 YIN = 2
 YANG = 1
@@ -77,7 +78,6 @@ class VariableStruct:
 
 data: typing.Dict[str, VariableStruct] = dict()
 
-
 def strive_num(x: typing.Union[int, float]) -> int:
     if type(x) is int:
         return x
@@ -85,7 +85,9 @@ def strive_num(x: typing.Union[int, float]) -> int:
         return ceil(x)
     return floor(x)
 
-def yin_or_yang(x) -> int:
+def yin_or_yang(x) -> typing.Optional[int]:
+    if not isinstance(x, (int, float)):
+        return None
     x = strive_num(x)
     return YIN if x % 2 == 0 else YANG
 
@@ -184,6 +186,45 @@ def run(bureaucracy, debug=False):
             case TokenType.HEAVEN:
                 dprint('halt')
                 return
+
+            case TokenType.PROMOTE | TokenType.DEMOTE:
+                dprint('promote/demote')
+                if rung.t == TokenType.DEMOTE:
+                    sign = -1
+                else:
+                    sign = 1
+                d_rung:Token = bureaucracy[delegate]
+                diff:int = 0
+                match d_rung.t:
+                    case TokenType.INT:
+                        diff = d_rung.value
+                    case TokenType.VAR:
+                        var_name:str = d_rung.value.name
+                        var:VariableStruct = data[var_name]
+                        value = var.value
+                        if isinstance(value, (int, float)):
+                            diff = strive_num(value)
+                bureaucrat += diff * sign
+
+            case TokenType.BLOSSOM:
+                d_rung = bureaucracy[delegate]
+                jump_val:int = 0
+                match d_rung.t:
+                    case TokenType.INT:
+                        jump_val = d_rung.value
+                    case TokenType.VAR:
+                        var_name:str = d_rung.value.name
+                        var:VariableStruct = data[var_name]
+                        value = var.value
+                        if isinstance(value, (int, float)):
+                            jump_val = value
+                    case _:
+                        continue
+                jump_val = abs(strive_num(jump_val))
+                if yin_or_yang(jump_val) is YIN:
+                    jump_val = -jump_val
+                bureaucrat += jump_val
+
             case TokenType.RISE | TokenType.FALL:
                 dprint('rise/fall')
                 if rung.t == TokenType.FALL:
@@ -204,24 +245,9 @@ def run(bureaucracy, debug=False):
                             diff = strive_num(value)
                 delegate += diff * sign
 
-            case TokenType.PROMOTE | TokenType.DEMOTE:
-                dprint('promote/demote')
-                if rung.t == TokenType.DEMOTE:
-                    sign = -1
-                else:
-                    sign = 1
-                d_rung:Token = bureaucracy[delegate]
-                diff:int = 0
-                match d_rung.t:
-                    case TokenType.INT:
-                        diff = d_rung.value
-                    case TokenType.VAR:
-                        var_name:str = d_rung.value.name
-                        var:VariableStruct = data[var_name]
-                        value = var.value
-                        if isinstance(value, (int, float)):
-                            diff = strive_num(value)
-                bureaucrat += diff * sign
+            case TokenType.LISTEN:
+                # TODO
+                pass
 
             case TokenType.COUNT | TokenType.SPEAK:
                 dprint('print')
@@ -243,24 +269,21 @@ def run(bureaucracy, debug=False):
                         if isinstance(value, (int, float)):
                             print(cast(value), end='')
 
-            case TokenType.PUNC:
-                dprint('punc')
-                data_tmp: typing.List[Token] = []
-                bureaucrat += 1
-                rung:Token = bureaucracy[bureaucrat]
-                var:VariableToken = rung.value
-                var_name:str = var.name
-                var_type = var.init_element
-                bureaucrat += 1
-                rung:Token = bureaucracy[bureaucrat]
-                while rung.t != TokenType.PUNC:
-                    data_tmp.append(rung)
-                    bureaucrat += 1
-                    rung:Token = bureaucracy[bureaucrat]
-                if len(data_tmp) == 1:
-                    if data_tmp[0].t == TokenType.INT:
-                        data_tmp = data_tmp[0].value
-                data[var_name] = VariableStruct(data_tmp, var_type)
+            case TokenType.CREATE | TokenType.DESTROY | TokenType.FEAR | TokenType.LOVE:
+                # TODO
+                pass
+
+            case TokenType.BECOME:
+                # TODO
+                pass
+
+            case TokenType.LIKE:
+                # TODO
+                pass
+
+            case TokenType.NEGATIVE:
+                # TODO
+                pass
 
             case TokenType.OPERATE:
                 dprint('operate')
@@ -272,6 +295,25 @@ def run(bureaucracy, debug=False):
                 b_var:VariableToken = b.value
                 b_name = b_var.name
                 data[b_name].value = result
+
+            case TokenType.PUNC:
+                dprint('punc')
+                data_tmp: typing.List[Token] = []
+                bureaucrat += 1
+                rung: Token = bureaucracy[bureaucrat]
+                var: VariableToken = rung.value
+                var_name: str = var.name
+                var_type = var.init_element
+                bureaucrat += 1
+                rung: Token = bureaucracy[bureaucrat]
+                while rung.t != TokenType.PUNC:
+                    data_tmp.append(rung)
+                    bureaucrat += 1
+                    rung: Token = bureaucracy[bureaucrat]
+                if len(data_tmp) == 1:
+                    if data_tmp[0].t == TokenType.INT:
+                        data_tmp = data_tmp[0].value
+                data[var_name] = VariableStruct(data_tmp, var_type)
 
             case TokenType.INT:
                 dprint('int literal')
@@ -287,6 +329,3 @@ def run(bureaucracy, debug=False):
                     pass
                 elif type(value) is list:
                     run(value, debug)
-
-            case _:
-                dprint("other")
