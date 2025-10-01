@@ -51,7 +51,7 @@ class ElementRelationship(Enum):
 
 class Token:
     t:TokenType = None
-    value = None
+    value:typing.Any = None
 
     def __init__(self, t, value=None):
         self.t = t
@@ -292,8 +292,29 @@ def run(bureaucracy, debug=False):
                     element_a=current_element, relationship_type=relationship)
 
             case TokenType.BECOME:
-                # TODO
-                pass
+                dprint('become')
+                d_rung:Token = bureaucracy[delegate]
+                match d_rung.t:
+                    case TokenType.INT:
+                        value:int = d_rung.value
+                        if value == 0:
+                            bureaucracy[delegate] = Token(TokenType.HEAVEN)
+                        else:
+                            d_rung.value = strive_num(value)
+                    case TokenType.VAR:
+                        var_name:str = d_rung.value.name
+                        var:VariableStruct = data[var_name]
+                        value = var.value
+                        if isinstance(value, (int, float)):
+                            if value == 0:
+                                bureaucracy[delegate] = Token(TokenType.HEAVEN)
+                                continue
+                            else:
+                                data[var_name].value = strive_num(value)
+                            var_type:ElementType = var.element
+                            data[var_name].element = element_relationship(element_a=var_type, relationship_type=ElementRelationship.CREATE)
+                    case _:
+                        continue
 
             case TokenType.LIKE:
                 # TODO
@@ -342,7 +363,7 @@ def run(bureaucracy, debug=False):
                 if var_name not in data:
                     continue
                 var:VariableStruct = data[var_name]
-                value = var.value
+                value:typing.Any = var.value
                 if isinstance(value, (int, float)):
                     pass
                 elif type(value) is list:
