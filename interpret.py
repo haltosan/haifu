@@ -246,8 +246,9 @@ def run(bureaucracy, debug=False):
                 delegate += diff * sign
 
             case TokenType.LISTEN:
-                # TODO
-                pass
+                dprint('listen')
+                bureaucracy.insert(0, input())
+                # TODO use earlier layers to make it a token
 
             case TokenType.COUNT | TokenType.SPEAK:
                 dprint('print')
