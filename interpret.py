@@ -91,7 +91,7 @@ def yin_or_yang(x) -> typing.Optional[int]:
     x = strive_num(x)
     return YIN if x % 2 == 0 else YANG
 
-def element_relationship(element_a, element_b=None, relationship_type=None):
+def element_relationship(element_a:ElementType, element_b:ElementType=None, relationship_type:ElementRelationship=None) -> typing.Union[ElementType, ElementRelationship]:
     create_relationship = {
         ElementType.EARTH: ElementType.METAL,
         ElementType.METAL: ElementType.WATER,
@@ -249,6 +249,7 @@ def run(bureaucracy, debug=False):
                 dprint('listen')
                 bureaucracy.insert(0, input())
                 # TODO use earlier layers to make it a token
+                # TODO how on earth do you detect if there's no stdin????
 
             case TokenType.COUNT | TokenType.SPEAK:
                 dprint('print')
@@ -271,8 +272,24 @@ def run(bureaucracy, debug=False):
                             print(cast(value), end='')
 
             case TokenType.CREATE | TokenType.DESTROY | TokenType.FEAR | TokenType.LOVE:
-                # TODO
-                pass
+                dprint('element change')
+                d_rung:Token = bureaucracy[delegate]
+                if d_rung.t != TokenType.VAR:
+                    continue
+                var_name:str = d_rung.value.name
+                current_element:ElementType = data[var_name].element
+                relationship:ElementRelationship = ElementRelationship.CREATE
+                match rung.t:
+                    case TokenType.CREATE:
+                        relationship = ElementRelationship.CREATE
+                    case TokenType.DESTROY:
+                        relationship = ElementRelationship.DESTROY
+                    case TokenType.FEAR:
+                        relationship = ElementRelationship.FEAR
+                    case TokenType.LOVE:
+                        relationship = ElementRelationship.LOVE
+                data[var_name].element = element_relationship(
+                    element_a=current_element, relationship_type=relationship)
 
             case TokenType.BECOME:
                 # TODO

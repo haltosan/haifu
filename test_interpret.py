@@ -54,7 +54,7 @@ print_function = [Token(TokenType.PUNC),
                   Token(TokenType.VAR, VariableToken('print')),
                   Token(TokenType.VAR, VariableToken('print')),
                   Token(TokenType.VAR, VariableToken('print'))]
-# TODO test including new instructions: blossom, listen
+# TODO test including new instructions: blossom, listen, create/destroy/fear/love
 
 def test_run_just_exit(capsys):
     run(just_exit, debug=True)
