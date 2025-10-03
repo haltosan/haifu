@@ -321,8 +321,16 @@ def run(bureaucracy, debug=False):
                 pass
 
             case TokenType.NEGATIVE:
-                # TODO
-                pass
+                dprint('negative')
+                d_rung:Token = bureaucracy[delegate]
+                match d_rung.t:
+                    case TokenType.INT:
+                        bureaucracy[delegate].value = - d_rung.value
+                    case TokenType.VAR:
+                        var_name:str = d_rung.value.name
+                        var:VariableStruct = data[var_name]
+                        if isinstance(var.value, (int, float)):
+                            data[var_name].value = -var.value
 
             case TokenType.OPERATE:
                 dprint('operate')
