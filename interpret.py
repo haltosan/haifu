@@ -247,7 +247,7 @@ def run(bureaucracy, debug=False):
 
             case TokenType.LISTEN:
                 dprint('listen')
-                bureaucracy.insert(0, input())
+                raise NotImplemented('Higher levels needed')
                 # TODO use earlier layers to make it a token
                 # TODO how on earth do you detect if there's no stdin????
 
@@ -317,8 +317,27 @@ def run(bureaucracy, debug=False):
                         continue
 
             case TokenType.LIKE:
-                # TODO
-                pass
+                dprint('like')
+                change:Token = bureaucracy[bureaucrat - 1]
+                if change.t != TokenType.VAR:
+                    continue
+                change_var_name:str = change.value.name
+                search:int = delegate
+                while search >= 0:
+                    d_rung:Token = bureaucracy[search]
+                    match d_rung.t:
+                        case TokenType.INT:
+                            data[change_var_name].value = d_rung.value
+                            break
+                        case TokenType.VAR:
+                            d_rung_var_name:str = d_rung.value.name
+                            value = data[d_rung_var_name].value
+                            if isinstance(value, (int, float)):
+                                data[change_var_name].value = value
+                                break
+                    search -= 1
+                if search >= 0:
+                    delegate = search
 
             case TokenType.NEGATIVE:
                 dprint('negative')
