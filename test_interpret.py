@@ -1,5 +1,4 @@
 from interpret import *
-import pytest
 
 just_exit = [Token(TokenType.HEAVEN)]
 print_123 = [Token(TokenType.INT, 1), Token(TokenType.INT, 2), Token(TokenType.INT, 3),
@@ -54,7 +53,15 @@ print_function = [Token(TokenType.PUNC),
                   Token(TokenType.VAR, VariableToken('print')),
                   Token(TokenType.VAR, VariableToken('print')),
                   Token(TokenType.VAR, VariableToken('print'))]
-# TODO test including new instructions: blossom, listen, create/destroy/fear/love, become, negative, like
+blossom_loop = [Token(TokenType.INT, 1),
+                Token(TokenType.INT, 2),
+                # data end
+                Token(TokenType.BLOSSOM),
+                Token(TokenType.COUNT),
+                Token(TokenType.RISE),
+                Token(TokenType.BLOSSOM)]
+
+# TODO test including new instructions: create/destroy/fear/love, become, negative, like
 
 def test_run_just_exit(capsys):
     run(just_exit, debug=True)
@@ -80,3 +87,8 @@ def test_run_print_function(capsys):
     run(print_function, debug=True)
     out, _ = capsys.readouterr()
     assert out == '111'
+
+def test_run_blossom_loop(capsys):
+    run(blossom_loop, debug=True)
+    out, err = capsys.readouterr()
+    assert out == '12'

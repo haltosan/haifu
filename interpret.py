@@ -207,6 +207,7 @@ def run(bureaucracy, debug=False):
                 bureaucrat += diff * sign
 
             case TokenType.BLOSSOM:
+                dprint('blossom')
                 d_rung = bureaucracy[delegate]
                 jump_val:int = 0
                 match d_rung.t:
@@ -224,6 +225,7 @@ def run(bureaucracy, debug=False):
                 if yin_or_yang(jump_val) is YIN:
                     jump_val = -jump_val
                 bureaucrat += jump_val
+                bureaucrat -= 1  # compensate for natural progression
 
             case TokenType.RISE | TokenType.FALL:
                 dprint('rise/fall')
@@ -252,11 +254,12 @@ def run(bureaucracy, debug=False):
                 # TODO how on earth do you detect if there's no stdin????
 
             case TokenType.COUNT | TokenType.SPEAK:
-                dprint('print')
                 if rung.t == TokenType.SPEAK:
+                    dprint('speak')
                     def cast(x):
                         return chr(x)
                 else:
+                    dprint('count')
                     def cast(x):
                         return x
 
