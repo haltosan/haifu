@@ -53,15 +53,42 @@ print_function = [Token(TokenType.PUNC),
                   Token(TokenType.VAR, VariableToken('print')),
                   Token(TokenType.VAR, VariableToken('print')),
                   Token(TokenType.VAR, VariableToken('print'))]
-blossom_loop = [Token(TokenType.INT, 1),
+blossom_loop = [Token(TokenType.PUNC),
+                Token(TokenType.VAR, VariableToken('v1', ElementType.EARTH)),
                 Token(TokenType.INT, 2),
+                Token(TokenType.PUNC),
+                Token(TokenType.INT, 1),
+                Token(TokenType.VAR, VariableToken('v1')),
                 # data end
+                Token(TokenType.RISE),
+                Token(TokenType.RISE),
+                Token(TokenType.RISE),
                 Token(TokenType.BLOSSOM),
                 Token(TokenType.COUNT),
                 Token(TokenType.RISE),
                 Token(TokenType.BLOSSOM)]
 
-# TODO test including new instructions: create/destroy/fear/love, become, negative, like
+element_changes = [Token(TokenType.PUNC),
+                   Token(TokenType.VAR, VariableToken('b', ElementType.METAL)),
+                   Token(TokenType.INT, 3),
+                   Token(TokenType.PUNC),
+                   Token(TokenType.PUNC),
+                   Token(TokenType.VAR, VariableToken('a', ElementType.EARTH)),
+                   Token(TokenType.INT, 2),
+                   Token(TokenType.PUNC),
+                   Token(TokenType.VAR, VariableToken('b')),
+                   Token(TokenType.VAR, VariableToken('a')),
+                   Token(TokenType.INT, 8),
+                   Token(TokenType.RISE),
+                   Token(TokenType.CREATE),
+                   Token(TokenType.DESTROY),
+                   Token(TokenType.LOVE),
+                   Token(TokenType.FEAR),
+                   Token(TokenType.OPERATE),
+                   Token(TokenType.COUNT)]
+
+# TODO test including new instructions: become, negative, like, promote/demote
+# TODO 100% line coverage
 
 def test_run_just_exit(capsys):
     run(just_exit, debug=True)
@@ -92,3 +119,8 @@ def test_run_blossom_loop(capsys):
     run(blossom_loop, debug=True)
     out, err = capsys.readouterr()
     assert out == '12'
+
+def test_run_element_change(capsys):
+    run(element_changes, debug=True)
+    out, err = capsys.readouterr()
+    assert out == '6'
