@@ -80,7 +80,9 @@ data: typing.Dict[str, VariableStruct] = dict()
 
 def strive_num(x: typing.Union[int, float]) -> int:
     if type(x) is int:
-        return x
+        if x < 0:
+            return x - 1
+        return x + 1
     if x > 0:
         return ceil(x)
     return floor(x)
@@ -202,8 +204,10 @@ def run(bureaucracy, debug=False):
                         var_name:str = d_rung.value.name
                         var:VariableStruct = data[var_name]
                         value = var.value
-                        if isinstance(value, (int, float)):
-                            diff = strive_num(value)
+                        if type(value) is int:
+                            diff = value
+                        else:
+                            continue
                 bureaucrat += diff * sign
 
             case TokenType.BLOSSOM:
@@ -217,11 +221,13 @@ def run(bureaucracy, debug=False):
                         var_name:str = d_rung.value.name
                         var:VariableStruct = data[var_name]
                         value = var.value
-                        if isinstance(value, (int, float)):
+                        if type(value) is int:
                             jump_val = value
+                        else:
+                            continue
                     case _:
                         continue
-                jump_val = abs(strive_num(jump_val))
+                jump_val = abs(jump_val)
                 if yin_or_yang(jump_val) is YIN:
                     jump_val = -jump_val
                 bureaucrat += jump_val
@@ -243,8 +249,10 @@ def run(bureaucracy, debug=False):
                         var_name:str = lower.value.name
                         var:VariableStruct = data[var_name]
                         value = var.value
-                        if isinstance(value, (int, float)):
-                            diff = strive_num(value)
+                        if type(value) is int:
+                            diff = value
+                        else:
+                            continue
                 delegate += diff * sign
 
             case TokenType.LISTEN:
