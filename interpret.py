@@ -90,7 +90,8 @@ def strive_num(x: typing.Union[int, float]) -> int:
 def yin_or_yang(x) -> typing.Optional[int]:
     if not isinstance(x, (int, float)):
         return None
-    x = strive_num(x)
+    if type(x) is float:
+        x = strive_num(x)
     return YIN if x % 2 == 0 else YANG
 
 def element_relationship(element_a:ElementType, element_b:ElementType=None, relationship_type:ElementRelationship=None) -> typing.Union[ElementType, ElementRelationship]:
