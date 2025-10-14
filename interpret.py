@@ -138,8 +138,11 @@ def element_relationship(element_a:ElementType, element_b:ElementType=None, rela
 
 def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
     global data
-    a_name:str = a.value.name
-    b_name:str = b.value.name
+    try:
+        a_name:str = a.value.name
+        b_name:str = b.value.name
+    except AttributeError:
+        return None
     a_var:VariableStruct = data[a_name]
     a_type = a_var.element
     a_val = a_var.value
