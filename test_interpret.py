@@ -94,7 +94,40 @@ element_changes = [Token(TokenType.PUNC),
                    Token(TokenType.OPERATE),
                    Token(TokenType.COUNT)]
 
-# TODO test including new instructions: become, negative, like, promote/demote
+become_1 = [Token(TokenType.INT, 1),
+            Token(TokenType.BECOME),
+            Token(TokenType.COUNT),
+            Token(TokenType.INT, 0),
+            Token(TokenType.INT, 6),
+            Token(TokenType.INT, 3),
+            Token(TokenType.RISE),
+            Token(TokenType.BECOME),
+            Token(TokenType.RISE),
+            Token(TokenType.DEMOTE),
+            Token(TokenType.COUNT)]
+
+become_2 = [Token(TokenType.PUNC),
+            Token(TokenType.VAR, VariableToken('non-zero')),
+            Token(TokenType.INT, 1),
+            Token(TokenType.PUNC),
+            Token(TokenType.PUNC),
+            Token(TokenType.VAR, VariableToken('zero')),
+            Token(TokenType.INT, 0),
+            Token(TokenType.PUNC),
+            Token(TokenType.VAR, VariableToken('non-zero')),
+            Token(TokenType.VAR, VariableToken('zero')),
+            Token(TokenType.INT, 9),
+            Token(TokenType.INT, 8),
+            Token(TokenType.RISE),
+            Token(TokenType.BECOME),
+            Token(TokenType.COUNT),
+            Token(TokenType.RISE),
+            Token(TokenType.BECOME),
+            Token(TokenType.RISE),
+            Token(TokenType.DEMOTE),
+            Token(TokenType.COUNT)]
+
+# TODO test including new instructions: negative, like, promote/demote
 # TODO 100% line coverage
 
 def test_run_just_exit(capsys):
@@ -131,3 +164,11 @@ def test_run_element_change(capsys):
     run(element_changes, debug=True)
     out, err = capsys.readouterr()
     assert out == '6'
+
+def test_run_become(capsys):
+    run(become_1, debug=True)
+    out, _ = capsys.readouterr()
+    assert out == '2'
+    run(become_2, debug=True)
+    out, _ = capsys.readouterr()
+    assert out == '2'

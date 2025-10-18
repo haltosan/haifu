@@ -213,6 +213,7 @@ def run(bureaucracy, debug=False):
                         else:
                             continue
                 bureaucrat += diff * sign
+                bureaucrat -= 1  # compensate for natural ascension
 
             case TokenType.BLOSSOM:
                 dprint('blossom')
@@ -315,7 +316,7 @@ def run(bureaucracy, debug=False):
                         if value == 0:
                             bureaucracy[delegate] = Token(TokenType.HEAVEN)
                         else:
-                            d_rung.value = strive_num(value)
+                            bureaucracy[delegate].value = strive_num(value)
                     case TokenType.VAR:
                         var_name:str = d_rung.value.name
                         var:VariableStruct = data[var_name]
@@ -328,8 +329,6 @@ def run(bureaucracy, debug=False):
                                 data[var_name].value = strive_num(value)
                             var_type:ElementType = var.element
                             data[var_name].element = element_relationship(element_a=var_type, relationship_type=ElementRelationship.CREATE)
-                    case _:
-                        continue
 
             case TokenType.LIKE:
                 dprint('like')
