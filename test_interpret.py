@@ -127,7 +127,27 @@ become_2 = [Token(TokenType.PUNC),
             Token(TokenType.DEMOTE),
             Token(TokenType.COUNT)]
 
-# TODO test including new instructions: negative, like, promote/demote
+negative = [Token(TokenType.INT, 1),
+          Token(TokenType.NEGATIVE),
+          Token(TokenType.COUNT),
+          Token(TokenType.PUNC),
+          Token(TokenType.VAR, VariableToken('one')),
+          Token(TokenType.INT, 1),
+          Token(TokenType.PUNC),
+          Token(TokenType.PUNC),
+          Token(TokenType.VAR, VariableToken('halt')),
+          Token(TokenType.HEAVEN),
+          Token(TokenType.PUNC),
+          Token(TokenType.INT, 4),
+          Token(TokenType.RISE),
+          Token(TokenType.NEGATIVE),
+          Token(TokenType.COUNT),
+          Token(TokenType.INT, 4),
+          Token(TokenType.RISE),
+          Token(TokenType.NEGATIVE),
+          Token(TokenType.COUNT)]
+
+# TODO test including new instructions: like, promote/demote
 # TODO 100% line coverage
 
 def test_run_just_exit(capsys):
@@ -172,3 +192,8 @@ def test_run_become(capsys):
     run(become_2, debug=True)
     out, _ = capsys.readouterr()
     assert out == '2'
+
+def test_run_negative(capsys):
+    run(negative, debug=True)
+    out, _ = capsys.readouterr()
+    assert out == '-1-1'
