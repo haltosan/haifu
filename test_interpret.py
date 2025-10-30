@@ -173,7 +173,25 @@ like = [Token(TokenType.COUNT),
         Token(TokenType.RISE),
         Token(TokenType.COUNT)]
 
-# TODO test including new instructions: promote/demote
+bureaucrat_control = [Token(TokenType.INT, 2),
+                      Token(TokenType.INT, 0),
+                      Token(TokenType.INT, 0),
+                      Token(TokenType.PUNC),
+                      Token(TokenType.VAR, VariableToken('num')),
+                      Token(TokenType.INT, 4),
+                      Token(TokenType.PUNC),
+                      Token(TokenType.PUNC),
+                      Token(TokenType.VAR, VariableToken('non-num')),
+                      Token(TokenType.HEAVEN),
+                      Token(TokenType.PUNC),
+                      Token(TokenType.PROMOTE),
+                      Token(TokenType.COUNT),
+                      Token(TokenType.COUNT),
+                      Token(TokenType.INT, 4),
+                      Token(TokenType.RISE),
+                      Token(TokenType.DEMOTE),
+                      Token(TokenType.DEMOTE)]
+
 # TODO 100% line coverage
 
 def test_run_just_exit(capsys):
@@ -228,3 +246,8 @@ def test_run_like(capsys):
     run(like, debug=True)
     out, _ = capsys.readouterr()
     assert out == '12'  # got 2 rn
+
+def test_run_bureaucrat_control(capsys):
+    run(bureaucrat_control, debug=True)
+    out, _ = capsys.readouterr()
+    assert out == '244'
