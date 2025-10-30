@@ -147,7 +147,33 @@ negative = [Token(TokenType.INT, 1),
           Token(TokenType.NEGATIVE),
           Token(TokenType.COUNT)]
 
-# TODO test including new instructions: like, promote/demote
+like = [Token(TokenType.COUNT),
+        Token(TokenType.LIKE),
+        Token(TokenType.INT, 1),
+        Token(TokenType.PUNC),
+        Token(TokenType.VAR, VariableToken('two')),
+        Token(TokenType.INT, 2),
+        Token(TokenType.PUNC),
+        Token(TokenType.PUNC),
+        Token(TokenType.VAR, VariableToken('dest')),
+        Token(TokenType.INT, 0),
+        Token(TokenType.PUNC),
+        Token(TokenType.INT, 3),
+        Token(TokenType.RISE),
+        Token(TokenType.VAR, VariableToken('dest')),
+        Token(TokenType.LIKE),
+        Token(TokenType.INT, 6),
+        Token(TokenType.RISE),
+        Token(TokenType.COUNT),
+        Token(TokenType.INT, 4),
+        Token(TokenType.FALL),
+        Token(TokenType.VAR, VariableToken('dest')),
+        Token(TokenType.LIKE),
+        Token(TokenType.INT, 4),
+        Token(TokenType.RISE),
+        Token(TokenType.COUNT)]
+
+# TODO test including new instructions: promote/demote
 # TODO 100% line coverage
 
 def test_run_just_exit(capsys):
@@ -197,3 +223,8 @@ def test_run_negative(capsys):
     run(negative, debug=True)
     out, _ = capsys.readouterr()
     assert out == '-1-1'
+
+def test_run_like(capsys):
+    run(like, debug=True)
+    out, _ = capsys.readouterr()
+    assert out == '12'  # got 2 rn
