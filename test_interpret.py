@@ -1,3 +1,5 @@
+import pytest
+
 from interpret import *
 
 just_exit = [Token(TokenType.HEAVEN)]
@@ -194,60 +196,68 @@ bureaucrat_control = [Token(TokenType.INT, 2),
 
 # TODO 100% line coverage
 
-def test_run_just_exit(capsys):
-    run(just_exit, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == ''
+class TestRun:
 
-def test_run_print_123(capsys):
-    run(print_123, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == '123'
+    @pytest.fixture(scope='function', autouse=True)
+    def debug_on_fail(self, request):
+        yield
+        if request.session.testsfailed:
+            return '#####################################################'
 
-def test_run_math(capsys):
-    run(math, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == '311.333333333333333320'
+    def test_run_just_exit(self, capsys):
+        run(just_exit, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '', err
 
-def test_run_hello_world(capsys):
-    run(hello_world, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == 'hello world\n'
+    def test_run_print_123(self, capsys, debug_on_fail):
+        run(print_123, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '123', err
 
-def test_run_print_function(capsys):
-    run(print_function, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == '111'
+    def test_run_math(self, capsys):
+        run(math, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '311.333333333333333320', err
 
-def test_run_blossom_loop(capsys):
-    run(blossom_loop, debug=True)
-    out, err = capsys.readouterr()
-    assert out == '12'
+    def test_run_hello_world(self, capsys):
+        run(hello_world, debug=True)
+        out, err = capsys.readouterr()
+        assert out == 'hello world\n', err
 
-def test_run_element_change(capsys):
-    run(element_changes, debug=True)
-    out, err = capsys.readouterr()
-    assert out == '6'
+    def test_run_print_function(self, capsys):
+        run(print_function, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '111', err
 
-def test_run_become(capsys):
-    run(become_1, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == '2'
-    run(become_2, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == '2'
+    def test_run_blossom_loop(self, capsys):
+        run(blossom_loop, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '12', err
 
-def test_run_negative(capsys):
-    run(negative, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == '-1-1'
+    def test_run_element_change(self, capsys):
+        run(element_changes, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '6', err
 
-def test_run_like(capsys):
-    run(like, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == '12'  # got 2 rn
+    def test_run_become(self, capsys):
+        run(become_1, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '2', err
+        run(become_2, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '2', err
 
-def test_run_bureaucrat_control(capsys):
-    run(bureaucrat_control, debug=True)
-    out, _ = capsys.readouterr()
-    assert out == '244'
+    def test_run_negative(self, capsys):
+        run(negative, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '-1-1', err
+
+    def test_run_like(self, capsys):
+        run(like, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '12', err
+
+    def test_run_bureaucrat_control(self, capsys):
+        run(bureaucrat_control, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '244', err

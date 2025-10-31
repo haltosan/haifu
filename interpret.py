@@ -5,7 +5,6 @@ import sys
 # TODO use typing hints properly on everything
 # TODO use docstrings
 # TODO formatting
-# TODO implement all instructions
 
 YIN = 2
 YANG = 1
