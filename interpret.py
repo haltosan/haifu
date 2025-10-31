@@ -142,12 +142,18 @@ def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
         b_name:str = b.value.name
     except AttributeError:
         return None
-    a_var:VariableStruct = data[a_name]
+    try:
+        a_var:VariableStruct = data[a_name]
+    except KeyError:
+        return None
     a_type = a_var.element
     a_val = a_var.value
     if not isinstance(a_val, (int, float)):
         return None
-    b_var = data[b_name]
+    try:
+        b_var = data[b_name]
+    except KeyError:
+        return None
     b_type = b_var.element
     b_val = b_var.value
     if not isinstance(b_var.value, (int, float)):
@@ -205,7 +211,10 @@ def run(bureaucracy, debug=False):
                         diff = d_rung.value
                     case TokenType.VAR:
                         var_name:str = d_rung.value.name
-                        var:VariableStruct = data[var_name]
+                        try:
+                            var:VariableStruct = data[var_name]
+                        except KeyError:
+                            continue
                         value = var.value
                         if type(value) is int:
                             diff = value
@@ -223,7 +232,10 @@ def run(bureaucracy, debug=False):
                         jump_val = d_rung.value
                     case TokenType.VAR:
                         var_name:str = d_rung.value.name
-                        var:VariableStruct = data[var_name]
+                        try:
+                            var:VariableStruct = data[var_name]
+                        except KeyError:
+                            continue
                         value = var.value
                         if type(value) is int:
                             jump_val = value
@@ -251,7 +263,10 @@ def run(bureaucracy, debug=False):
                         diff = lower.value
                     case TokenType.VAR:
                         var_name:str = lower.value.name
-                        var:VariableStruct = data[var_name]
+                        try:
+                            var:VariableStruct = data[var_name]
+                        except KeyError:
+                            continue
                         value = var.value
                         if type(value) is int:
                             diff = value
@@ -281,7 +296,10 @@ def run(bureaucracy, debug=False):
                         print(cast(d_rung.value), end='')
                     case TokenType.VAR:
                         var_name:str = d_rung.value.name
-                        var:VariableStruct = data[var_name]
+                        try:
+                            var:VariableStruct = data[var_name]
+                        except KeyError:
+                            continue
                         value = var.value
                         if isinstance(value, (int, float)):
                             print(cast(value), end='')
@@ -292,7 +310,10 @@ def run(bureaucracy, debug=False):
                 if d_rung.t != TokenType.VAR:
                     continue
                 var_name:str = d_rung.value.name
-                current_element:ElementType = data[var_name].element
+                try:
+                    current_element:ElementType = data[var_name].element
+                except KeyError:
+                    continue
                 relationship:ElementRelationship = ElementRelationship.CREATE
                 match rung.t:
                     case TokenType.CREATE:
@@ -318,7 +339,10 @@ def run(bureaucracy, debug=False):
                             bureaucracy[delegate].value = strive_num(value)
                     case TokenType.VAR:
                         var_name:str = d_rung.value.name
-                        var:VariableStruct = data[var_name]
+                        try:
+                            var:VariableStruct = data[var_name]
+                        except KeyError:
+                            continue
                         value = var.value
                         if isinstance(value, (int, float)):
                             if value == 0:
@@ -335,6 +359,8 @@ def run(bureaucracy, debug=False):
                 if change.t != TokenType.VAR:
                     continue
                 change_var_name:str = change.value.name
+                if change_var_name not in data:
+                    continue
                 search:int = delegate
                 while search >= 0:
                     d_rung:Token = bureaucracy[search]
@@ -360,7 +386,10 @@ def run(bureaucracy, debug=False):
                         bureaucracy[delegate].value = - d_rung.value
                     case TokenType.VAR:
                         var_name:str = d_rung.value.name
-                        var:VariableStruct = data[var_name]
+                        try:
+                            var:VariableStruct = data[var_name]
+                        except KeyError:
+                            continue
                         if isinstance(var.value, (int, float)):
                             data[var_name].value = -var.value
 
