@@ -354,3 +354,8 @@ class TestInternal:
                             Token(TokenType.VAR, VariableToken('b'))) is interpret.YANG
         assert interpret.op(Token(TokenType.VAR, VariableToken('b')),
                             Token(TokenType.VAR, VariableToken('c'))) is interpret.YIN
+
+    def test_rand(self):
+        a = interpret.init_rand(Token(TokenType.RAND))
+        b = interpret.init_rand(Token(TokenType.RAND))
+        assert a != b, 'Random values likely are not the same'

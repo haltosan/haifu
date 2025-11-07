@@ -2,6 +2,7 @@ from math import ceil, floor
 from enum import Enum
 import typing
 import sys
+from random import randint
 # TODO use typing hints properly on everything
 # TODO use docstrings
 # TODO formatting
@@ -9,6 +10,8 @@ import sys
 YIN = 2
 YANG = 1
 
+RAND_MIN = 0
+RAND_MAX = 2**32
 
 class TokenType(Enum):
     HEAVEN = 0
@@ -31,6 +34,7 @@ class TokenType(Enum):
     PUNC = 17
     INT = 18
     VAR = 19
+    RAND = 20
 
 
 class ElementType(Enum):
@@ -77,6 +81,11 @@ class VariableStruct:
 
 data: typing.Dict[str, VariableStruct] = dict()
 
+def init_rand(x: typing.Any) -> typing.Any:
+    if type(x) is Token and x.t == TokenType.RAND:
+        x = randint(RAND_MIN, RAND_MAX)
+    return x
+
 def strive_num(x: typing.Union[int, float]) -> int:
     if type(x) is int:
         if x < 0:
@@ -86,7 +95,8 @@ def strive_num(x: typing.Union[int, float]) -> int:
         return ceil(x)
     return floor(x)
 
-def yin_or_yang(x) -> typing.Optional[int]:
+def yin_or_yang(x: typing.Any) -> typing.Optional[int]:
+    x = init_rand(x)
     if not isinstance(x, (int, float)):
         return None
     if type(x) is float:
@@ -151,7 +161,7 @@ def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
     except KeyError:
         return None
     a_type = a_var.element
-    a_val = a_var.value
+    a_val = init_rand(a_var.value)
     if not isinstance(a_val, (int, float)):
         return None
     try:
@@ -159,7 +169,7 @@ def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
     except KeyError:
         return None
     b_type = b_var.element
-    b_val = b_var.value
+    b_val = init_rand(b_var.value)
     if not isinstance(b_var.value, (int, float)):
         return None
     match element_relationship(b_type, a_type):
@@ -304,7 +314,7 @@ def run(bureaucracy, debug=False):
                             var:VariableStruct = data[var_name]
                         except KeyError:
                             continue
-                        value = var.value
+                        value = init_rand(var.value)
                         if isinstance(value, (int, float)):
                             print(cast(value), end='')
 
@@ -347,7 +357,7 @@ def run(bureaucracy, debug=False):
                             var:VariableStruct = data[var_name]
                         except KeyError:
                             continue
-                        value = var.value
+                        value = init_rand(var.value)
                         if isinstance(value, (int, float)):
                             if value == 0:
                                 bureaucracy[delegate] = Token(TokenType.HEAVEN)
@@ -374,7 +384,7 @@ def run(bureaucracy, debug=False):
                             break
                         case TokenType.VAR:
                             d_rung_var_name:str = d_rung.value.name
-                            value = data[d_rung_var_name].value
+                            value = init_rand(data[d_rung_var_name].value)
                             if isinstance(value, (int, float)):
                                 data[change_var_name].value = value
                                 break
@@ -394,8 +404,9 @@ def run(bureaucracy, debug=False):
                             var:VariableStruct = data[var_name]
                         except KeyError:
                             continue
-                        if isinstance(var.value, (int, float)):
-                            data[var_name].value = -var.value
+                        value = init_rand(var.value)
+                        if isinstance(value, (int, float)):
+                            data[var_name].value = -value
 
             case TokenType.OPERATE:
                 dprint('operate')
@@ -436,7 +447,7 @@ def run(bureaucracy, debug=False):
                 if var_name not in data:
                     continue
                 var:VariableStruct = data[var_name]
-                value:typing.Any = var.value
+                value:typing.Any = init_rand(var.value)
                 if isinstance(value, (int, float)):
                     pass
                 elif type(value) is list:

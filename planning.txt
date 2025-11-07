@@ -2,15 +2,13 @@ have dm's original spec (dm.txt)
 add my own clarification to the spec (spec.txt)
 reserved words (reserved.txt)
 
-write basic program using modified syntax (examples/*-simplified.txt)
+write basic programs
     print 123
     basic math
     hello world
-    infinite loop
-    print function
     fizzbuzz
 
-write interpreter for the basic level (interpret.py)
+[done] write interpreter for the basic level (interpret.py)
 then work on the lex/parse/interpret stuff
 
 think about including https://pypi.org/project/PyDictionary/ to find elemental relationships (synonyms)

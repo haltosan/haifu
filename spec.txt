@@ -6,3 +6,4 @@ Print commands (say, age) will not output a newline.
 Print commands (say, age) will only output single values.
 When the Celestial Bureaucrat encounters a variable that contains a list of instructions, the Bureaucrat interprets the instructions as if it was a new program. The Bureaucrat will return up a Bureaucracy on the 'heaven' instruction. Variable values and side effects will carry through.
 With the 'blossom' instruction, the jump value is the striving value that the Delegate observes.
+Random integer values will be [0, 2^32]
