@@ -93,7 +93,7 @@ def yin_or_yang(x) -> typing.Optional[int]:
         x = strive_num(x)
     return YIN if x % 2 == 0 else YANG
 
-def element_relationship(element_a:ElementType, element_b:ElementType=None, relationship_type:ElementRelationship=None) -> typing.Union[ElementType, ElementRelationship]:
+def element_relationship(element_a:ElementType, element_b:ElementType=None, relationship_type:ElementRelationship=None) -> typing.Optional[typing.Union[ElementType, ElementRelationship]]:
     create_relationship = {
         ElementType.EARTH: ElementType.METAL,
         ElementType.METAL: ElementType.WATER,
@@ -133,7 +133,11 @@ def element_relationship(element_a:ElementType, element_b:ElementType=None, rela
 
     if element_b is None:
         return relationship[relationship_type][element_a]
-    return a_b_relationship[element_a, element_b]
+    try:
+        ret = a_b_relationship[element_a, element_b]
+        return ret
+    except KeyError:
+        return None
 
 def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
     global data
@@ -276,7 +280,7 @@ def run(bureaucracy, debug=False):
 
             case TokenType.LISTEN:
                 dprint('listen')
-                raise NotImplemented('Higher levels needed')
+                raise NotImplementedError('Higher levels needed')
                 # TODO use earlier layers to make it a token
                 # TODO how on earth do you detect if there's no stdin????
 
