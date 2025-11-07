@@ -19,3 +19,5 @@ convert into tokens
 send to next layer
 
 think about including https://pypi.org/project/PyDictionary/ to find elemental relationships (synonyms)
+
+make spec rfc 2119 compliant
