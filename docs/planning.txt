@@ -11,4 +11,11 @@ write basic programs
 [done] write interpreter for the basic level (interpret.py)
 then work on the lex/parse/interpret stuff
 
+-- overview of parser --
+break into stanzas
+validate haiku structure
+remove comments
+convert into tokens
+send to next layer
+
 think about including https://pypi.org/project/PyDictionary/ to find elemental relationships (synonyms)
