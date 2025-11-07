@@ -1,5 +1,3 @@
-import pytest
-
 import interpret
 from interpret import Token, TokenType, VariableToken, ElementType
 
@@ -252,7 +250,6 @@ clamping = [Token(TokenType.VAR, VariableToken('var')),
             Token(TokenType.RISE),
             Token(TokenType.DEMOTE)]
 
-# TODO 100% line coverage
 
 class TestRun:
     def test_run_just_exit(self, capsys):
