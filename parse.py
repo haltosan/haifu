@@ -1,12 +1,25 @@
 import typing
+from enum import Enum
 
 import interpret
 
 """
 read
-validate
+validate text
 tokenize
+validate tokens
 """
+
+class ParserTokenType(Enum):
+    COMMA = 100
+
+class ParserToken:
+    t:ParserTokenType = None
+    value:typing.Any = None
+
+    def __init__(self, t, value=None):
+        self.t = t
+        self.value = value
 
 def read_file(file_name:str) -> str:
     """
@@ -14,15 +27,6 @@ def read_file(file_name:str) -> str:
 
     :param file_name: name of file containing program
     :returns: string of file content, raw
-    """
-    pass
-
-def is_balanced(raw:str) -> bool:
-    """
-    Validate a program has an identical number of yin and yang values
-
-    :param raw: raw text of the file
-    :returns: True if the program is balanced
     """
     pass
 
@@ -45,21 +49,30 @@ def is_valid_haiku(stanza:str) -> bool:
     """
     pass
 
-def remove_comments(raw:str) -> str:
-    """
-    Remove comments from a program
-
-    :param raw: raw text of the file
-    :returns: raw text without the comments
-    """
-    pass
-
-def make_tokens(raw_valid:str) -> typing.List[interpret.Token]:
+def make_tokens(raw_valid:str) -> typing.List[ParserToken]:
     """
     Turn the syntactically valid raw text into a list of tokens
 
     :param raw_valid: raw text post validation
-    :returns: list of tokens
+    :returns: list of parser tokens
+    """
+    pass
+
+def is_balanced(tokens:typing.List[ParserToken]) -> bool:
+    """
+    Validate a program has an identical number of yin and yang values
+
+    :param tokens: list of parser tokens
+    :returns: True if the program is balanced
+    """
+    pass
+
+def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[interpret.Token]:
+    """
+    Remove comments from a program
+
+    :param tokens: list of parser tokens
+    :returns: list of tokens minus the comments
     """
     pass
 
