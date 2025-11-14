@@ -11,7 +11,10 @@ class TestContract:
     class TestInternals:
         def test_read_file_negative(self):
             file_name = 'nonexist.txt'
-            pathlib.Path(file_name).unlink()
+            try:
+                pathlib.Path(file_name).unlink()
+            except FileNotFoundError:
+                pass
             assert parse.read_file(file_name) == '', 'Nonexistent files MUST be blank'
 
         def test_read_file_positive(self):
@@ -23,6 +26,7 @@ class TestContract:
             with open(file_name, 'w') as file:
                 file.write(text)
             assert parse.read_file(file_name) == text, 'Text does not match'
+            pathlib.Path(file_name).unlink()
 
         def test_is_balanced_negative(self):
             program = [parse.ParserToken(interpret.TokenType.INT, 1),

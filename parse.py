@@ -28,7 +28,12 @@ def read_file(file_name:str) -> str:
     :param file_name: name of file containing program
     :returns: string of file content, raw
     """
-    pass
+    try:
+        with open(file_name, 'r') as file:
+            ret = file.read()
+    except FileNotFoundError:
+        return ''
+    return ret
 
 def make_stanzas(raw:str) -> typing.List[str]:
     """
