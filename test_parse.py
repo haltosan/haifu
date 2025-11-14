@@ -2,6 +2,7 @@ import pathlib
 
 import parse
 import interpret
+from parse import make_stanzas
 
 
 class TestContract:
@@ -27,6 +28,52 @@ class TestContract:
                 file.write(text)
             assert parse.read_file(file_name) == text, 'Text does not match'
             pathlib.Path(file_name).unlink()
+
+        def test_make_stanzas_positive(self):
+            text = ('line 1\n'
+                    'line 2\n'
+                    'line 3\n'
+                    '\n'
+                    'line 4\n'
+                    'line 5\n'
+                    'line 6')
+            for _ in range(2):
+                try:
+                    stanzas = parse.make_stanzas(text)
+                    assert len(stanzas) == 2
+                    assert stanzas[0] == 'line 1\nline 2\nline 3'
+                    assert stanzas[1] == 'line 4\nline 5\nline 6'
+                except SyntaxError:
+                    assert False, '7 lines is valid'
+                text += '\n'
+
+            try:
+                assert parse.make_stanzas('') == []
+            except SyntaxError:
+                assert False, '0 lines is valid'
+
+        def test_make_stanzas_negative(self):
+            text = ('line 1\n'
+                    'line 2')
+            try:
+                parse.make_stanzas(text)
+                assert False, '2 lines is not valid'
+            except SyntaxError:
+                pass
+
+            text += ('\n'
+                     'line 3\n'
+                     'line 4\n'
+                     'line 5\n'
+                     'line 6\n'
+                     'line 7\n')
+            try:
+                parse.make_stanzas(text)
+                assert False, 'No line between stanzas'
+            except SyntaxError:
+                pass
+
+
 
         def test_is_balanced_negative(self):
             program = [parse.ParserToken(interpret.TokenType.INT, 1),

@@ -43,7 +43,26 @@ def make_stanzas(raw:str) -> typing.List[str]:
     :returns: list of stanza strings, stanzas
     :raises SyntaxError: if there aren't proper stanzas
     """
-    pass
+    lines = raw.split('\n')
+    if len(lines) == 1 and lines[0] == '':
+        return []
+    if len(lines) % 4 != 0 and (len(lines) + 1) % 4 != 0:
+        raise SyntaxError('Improper number of lines')
+
+    stanzas = []
+    i = 0
+    buf = []
+    for line in lines:
+        i += 1
+        if i % 4 == 0:
+            if line != '':
+                raise SyntaxError('No blank line between stanzas')
+            continue
+        buf.append(line)
+        if i % 4 == 3:
+            stanzas.append('\n'.join(buf))
+            buf = []
+    return stanzas
 
 def is_valid_haiku(stanza:str) -> bool:
     """
