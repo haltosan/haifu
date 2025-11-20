@@ -73,7 +73,17 @@ class TestContract:
             except SyntaxError:
                 pass
 
+        def test_is_valid_haiku_positive(self):
+            text = ('this is a test line\n'
+                    'this is another test line\n'
+                    'the final test line')
+            assert parse.is_valid_haiku(text), 'Stanza follows 5-7-5 pattern'
 
+        def test_is_valid_haiku_negative(self):
+            text = ('this is not a haiku\n'
+                    'this is another test line\n'
+                    'the final test line')
+            assert parse.is_valid_haiku(text) == False, 'Stanza is 6-7-5'
 
         def test_is_balanced_negative(self):
             program = [parse.ParserToken(interpret.TokenType.INT, 1),

@@ -1,5 +1,7 @@
 import typing
 from enum import Enum
+from syllables import estimate
+import cmudict
 
 import interpret
 
@@ -9,6 +11,19 @@ validate text
 tokenize
 validate tokens
 """
+
+c_dict = cmudict.dict()
+
+def count(w: str) -> int:
+    """Count syllables in a word"""
+    # based on https://datascience.stackexchange.com/a/24865
+    if w in c_dict:
+        return [len(list(y for y in x if y[-1].isdigit())) for x in c_dict[w.lower()]][0]
+    return estimate(w)
+
+def count_line(line:str) -> typing.List[int]:
+    words = line.split(' ')
+    return [count(word) for word in words]
 
 class ParserTokenType(Enum):
     COMMA = 100
@@ -71,7 +86,9 @@ def is_valid_haiku(stanza:str) -> bool:
     :param stanza: single stanza to validate
     :returns: True if the stanza is valid
     """
-    pass
+    lines = stanza.split('\n')
+    counts = [sum(count_line(line)) for line in lines]
+    return counts == [5, 7, 5]
 
 def make_tokens(raw_valid:str) -> typing.List[ParserToken]:
     """
