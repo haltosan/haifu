@@ -98,13 +98,14 @@ class TestContract:
                            parse.ParserToken(interpret.TokenType.RAND)], out
 
         def test_make_tokens_numbers(self):
-            raw = 'zero a dozen century fifteenth'
+            raw = 'zero a dozen century fifteenth three-\nhundred-fifty-two'
             out = parse.make_tokens(raw)
             assert out == [parse.ParserToken(interpret.TokenType.INT, 0),
                            parse.ParserToken(interpret.TokenType.INT, 1),
                            parse.ParserToken(interpret.TokenType.INT, 12),
                            parse.ParserToken(interpret.TokenType.INT, 100),
-                           parse.ParserToken(interpret.TokenType.INT, 15)], out
+                           parse.ParserToken(interpret.TokenType.INT, 15),
+                           parse.ParserToken(interpret.TokenType.INT, 352)], out
 
         def test_make_tokens_var(self):
             raw = 'tree flame rock metal bogus'
