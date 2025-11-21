@@ -1,8 +1,7 @@
 import pathlib
 
-import parse
 import interpret
-from parse import make_stanzas
+import parse
 
 
 class TestContract:
@@ -84,6 +83,43 @@ class TestContract:
                     'this is another test line\n'
                     'the final test line')
             assert parse.is_valid_haiku(text) == False, 'Stanza is 6-7-5'
+
+        def test_make_tokens_basic(self):
+            raw = 'heaven more reduce petal up descend hear speak some'
+            out = parse.make_tokens(raw)
+            assert out == [parse.ParserToken(interpret.TokenType.HEAVEN),
+                           parse.ParserToken(interpret.TokenType.PROMOTE),
+                           parse.ParserToken(interpret.TokenType.DEMOTE),
+                           parse.ParserToken(interpret.TokenType.BLOSSOM),
+                           parse.ParserToken(interpret.TokenType.RISE),
+                           parse.ParserToken(interpret.TokenType.FALL),
+                           parse.ParserToken(interpret.TokenType.LISTEN),
+                           parse.ParserToken(interpret.TokenType.SPEAK),
+                           parse.ParserToken(interpret.TokenType.RAND)], out
+
+        def test_make_tokens_numbers(self):
+            raw = 'zero a dozen century fifteenth'
+            out = parse.make_tokens(raw)
+            assert out == [parse.ParserToken(interpret.TokenType.INT, 0),
+                           parse.ParserToken(interpret.TokenType.INT, 1),
+                           parse.ParserToken(interpret.TokenType.INT, 12),
+                           parse.ParserToken(interpret.TokenType.INT, 100),
+                           parse.ParserToken(interpret.TokenType.INT, 15)], out
+
+        def test_make_tokens_var(self):
+            raw = 'tree flame rock metal bogus'
+            out = parse.make_tokens(raw)
+            assert out == [parse.ParserToken(interpret.TokenType.VAR,
+                                             interpret.VariableToken('tree', interpret.ElementType.WOOD)),
+                           parse.ParserToken(interpret.TokenType.VAR,
+                                             interpret.VariableToken('flame', interpret.ElementType.FIRE)),
+                           parse.ParserToken(interpret.TokenType.VAR,
+                                             interpret.VariableToken('rock', interpret.ElementType.EARTH)),
+                           parse.ParserToken(interpret.TokenType.VAR,
+                                             interpret.VariableToken('metal', interpret.ElementType.METAL)),
+                           parse.ParserToken(interpret.TokenType.VAR,
+                                             interpret.VariableToken('bogus', interpret.ElementType.EARTH))
+                           ], out
 
         def test_is_balanced_negative(self):
             program = [parse.ParserToken(interpret.TokenType.INT, 1),
