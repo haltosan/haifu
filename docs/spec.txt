@@ -9,3 +9,4 @@ With the 'blossom' instruction, the jump value is the striving value that the De
 Random integer values will be [0, 2^32].
 Haiku stanzas are separated by a blank line. The final stanza doesn't need to be followed by a blank line.
 Literals present in the program at parse time will be evaluated for balance. There must be an identical number of values that have Yin quality as Yang quality.
+Numbers will only be in the english form (one) and not numerical form (1).
