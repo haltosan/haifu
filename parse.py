@@ -1,9 +1,12 @@
 import typing
 from enum import Enum
+
+import number_parser
 from syllables import estimate
 import cmudict
 
 import interpret
+from interpret import TokenType, ElementType, VariableToken
 
 """
 read
@@ -11,6 +14,8 @@ validate text
 tokenize
 validate tokens
 """
+
+# TODO restrict vulgar words
 
 c_dict = cmudict.dict()
 
@@ -22,6 +27,7 @@ def count(w: str) -> int:
     return estimate(w)
 
 def count_line(line:str) -> typing.List[int]:
+    line = line.replace('-', ' ')  # split hyphenated words
     words = line.split(' ')
     return [count(word) for word in words]
 
@@ -35,6 +41,77 @@ class ParserToken:
     def __init__(self, t, value=None):
         self.t = t
         self.value = value
+
+    def __eq__(self, other):
+        if not isinstance(other, ParserToken):
+            return NotImplemented
+        return self.t == other.t and self.value == other.value
+
+    def __repr__(self):
+        return f"ParserToken(t='{self.t}', value='{self.value}')"
+
+number_conversion = {'no':'0', 'none':'0',
+                     'a':'1', 'an':'1',
+                     'couple':'2',
+                     'dozen':'12',
+                     'century':'100'}
+heaven_token = [TokenType.HEAVEN, ['heaven', 'nirvana', 'enlightenment', 'harmony']]
+promote_token = [TokenType.PROMOTE, ['promote', 'more', 'increase', 'wax']]
+demote_token = [TokenType.DEMOTE, ['demote', 'less', 'reduce', 'wane']]
+blossom_token = [TokenType.BLOSSOM, ['blossom', 'flower', 'petal']]
+rise_token = [TokenType.RISE, ['rise', 'float', 'ascend', 'up']]
+fall_token = [TokenType.FALL, ['fall', 'drop', 'descend', 'down']]
+listen_token = [TokenType.LISTEN, ['listen', 'hear', 'see']]
+speak_token = [TokenType.SPEAK, ['speak', 'say', 'draw']]
+count_token = [TokenType.COUNT, ['count', 'number', 'age']]
+create_token = [TokenType.CREATE, ['create', 'produce', 'build']]
+destroy_token = [TokenType.DESTROY, ['destroy', 'damage', 'kill']]
+fear_token = [TokenType.FEAR, ['fear', 'hate', 'doubt']]
+love_token = [TokenType.LOVE, ['love', 'desire', 'regard']]
+become_token = [TokenType.BECOME, ['become', 'reach', 'achieve']]
+like_token = [TokenType.LIKE, ['like', 'as', 'is', 'resemble']]
+negative_token = [TokenType.NEGATIVE, 'negative', 'not', 'deny']
+operate_token = [TokenType.OPERATE, ['operate', 'examine', 'study']]
+rand_token = [TokenType.RAND, ['some', 'few', 'many']]
+
+basic_words = [heaven_token, promote_token, demote_token, blossom_token, rise_token, fall_token, listen_token, speak_token, count_token, create_token, destroy_token, fear_token, love_token, become_token, like_token, negative_token, operate_token, rand_token]
+
+wood = [ElementType.WOOD, ['wood', 'tree', 'grass', 'cherry', 'oak']]
+fire = [ElementType.FIRE, ['fire', 'flame', 'ash', 'smoke', 'embers']]
+earth = [ElementType.EARTH, ['earth', 'soil', 'mountain', 'rock', 'plain']]
+metal = [ElementType.METAL, ['metal', 'sword', 'iron', 'plough', 'knife']]
+water = [ElementType.WATER, ['water', 'rain', 'snow', 'river', 'ice']]
+elements = [wood, fire, earth, metal, water]
+
+
+def get_element_type(word:str) -> ElementType:
+    for element in elements:
+        if word in element[1]:
+            return element[0]
+    return ElementType.EARTH
+
+
+def word_to_token(word:str) -> ParserToken:
+    if word == ',':
+        return ParserToken(ParserTokenType.COMMA)
+    word = word.lower()
+    # convert numbers
+    word = number_parser.parse(word)  # convert number word to number literal
+    if word in number_conversion:
+        word = number_conversion[word]
+    try:
+        value = int(word)
+        return ParserToken(TokenType.INT, value)
+    except ValueError:
+        pass
+    # convert basic words
+    for keyword in basic_words:
+        if word in keyword[1]:
+            return ParserToken(keyword[0])
+    # else variable
+    element_t = get_element_type(word)
+    return ParserToken(TokenType.VAR, VariableToken(word, element_t))
+
 
 def read_file(file_name:str) -> str:
     """
@@ -97,7 +174,12 @@ def make_tokens(raw_valid:str) -> typing.List[ParserToken]:
     :param raw_valid: raw text post validation
     :returns: list of parser tokens
     """
-    pass
+    raw_valid = raw_valid.replace('-\n', '-')  # connect hyphenated words across lines
+    raw_valid = raw_valid.replace('\n', ' ')  # remove newlines
+    raw_valid = raw_valid.replace('  ', ' ')  # remove blank lines
+    words = raw_valid.split(' ')
+    tokens = [word_to_token(word) for word in words]
+    return tokens
 
 def is_balanced(tokens:typing.List[ParserToken]) -> bool:
     """
