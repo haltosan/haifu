@@ -122,6 +122,15 @@ class TestContract:
                                              interpret.VariableToken('bogus', interpret.ElementType.EARTH))
                            ], out
 
+        def test_make_tokens_comments(self):
+            raw = 'heaven, some, not'
+            out = parse.make_tokens(raw)
+            assert out == [parse.ParserToken(interpret.TokenType.HEAVEN),
+                           parse.ParserToken(parse.ParserTokenType.COMMA),
+                           parse.ParserToken(interpret.TokenType.RAND),
+                           parse.ParserToken(parse.ParserTokenType.COMMA),
+                           parse.ParserToken(interpret.TokenType.NEGATIVE)], out
+
         def test_is_balanced_negative(self):
             program = [parse.ParserToken(interpret.TokenType.INT, 1),
                        parse.ParserToken(parse.ParserTokenType.COMMA),

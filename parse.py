@@ -70,7 +70,7 @@ fear_token = [TokenType.FEAR, ['fear', 'hate', 'doubt']]
 love_token = [TokenType.LOVE, ['love', 'desire', 'regard']]
 become_token = [TokenType.BECOME, ['become', 'reach', 'achieve']]
 like_token = [TokenType.LIKE, ['like', 'as', 'is', 'resemble']]
-negative_token = [TokenType.NEGATIVE, 'negative', 'not', 'deny']
+negative_token = [TokenType.NEGATIVE, ['negative', 'not', 'deny']]
 operate_token = [TokenType.OPERATE, ['operate', 'examine', 'study']]
 rand_token = [TokenType.RAND, ['some', 'few', 'many']]
 
@@ -178,7 +178,13 @@ def make_tokens(raw_valid:str) -> typing.List[ParserToken]:
     raw_valid = raw_valid.replace('\n', ' ')  # remove newlines
     raw_valid = raw_valid.replace('  ', ' ')  # remove blank lines
     words = raw_valid.split(' ')
-    tokens = [word_to_token(word) for word in words]
+    tokens = []
+    for word in words:
+        if ',' in word:
+            tokens.append(word_to_token(word[:-1]))
+            tokens.append(word_to_token(','))
+        else:
+            tokens.append(word_to_token(word))
     return tokens
 
 def is_balanced(tokens:typing.List[ParserToken]) -> bool:
