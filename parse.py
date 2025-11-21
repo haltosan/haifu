@@ -205,7 +205,15 @@ def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[interpret.To
     :param tokens: list of parser tokens
     :returns: list of tokens minus the comments
     """
-    pass
+    new_tokens = []
+    in_comment = False
+    for token in tokens:
+        if token.t == ParserTokenType.COMMA:
+            in_comment = not in_comment
+        else:
+            if not in_comment:
+                new_tokens.append(token)
+    return new_tokens
 
 def parse(file_name:str) -> typing.List[interpret.Token]:
     """
