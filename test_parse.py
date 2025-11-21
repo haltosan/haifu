@@ -31,7 +31,7 @@ class TestContract:
 
         def test_parse_print_123(self):
             raw = ('one two three count rise\n'
-                   'count rise count rise count heaven,\n'
+                   'count rise count heaven, four test\n'
                    'longer longer test')
             out = self.raw_to_out(raw)
             assert out == [interpret.Token(interpret.TokenType.INT, 1),
@@ -46,7 +46,7 @@ class TestContract:
 
         def test_print_var_elements(self):
             raw = ('tree flame metal ice\n'
-                   'soil spirit, pumpkin spice\n'
+                   'soil spirit, and pumpkin spice\n'
                    'longer longer test')
             out = self.raw_to_out(raw)
             assert out == [interpret.Token(interpret.TokenType.VAR,
@@ -213,9 +213,7 @@ class TestContract:
             assert parse.remove_comments(program) == [], 'Only comments is empty'
             program.append(parse.ParserToken(interpret.TokenType.PUNC))
             result = parse.remove_comments(program)
-            assert len(result) == 1, 'Only 1 non-comment'
-            assert type(result[0]) is parse.ParserToken
-            assert result[0].t == interpret.TokenType.PUNC
+            assert result == [interpret.Token(interpret.TokenType.PUNC)]
 
 
 class TestLineCoverage:

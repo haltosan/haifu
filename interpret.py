@@ -60,6 +60,14 @@ class Token:
         self.t = t
         self.value = value
 
+    def __eq__(self, other):
+        if not isinstance(other, Token):
+            return NotImplemented
+        return self.t == other.t and self.value == other.value
+
+    def __repr__(self):
+        return f"Token(t='{self.t}', value='{self.value}')"
+
 
 class VariableToken:
     name:str = None

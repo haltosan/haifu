@@ -19,6 +19,9 @@ validate tokens
 
 c_dict = cmudict.dict()
 
+def print_error(txt):
+    print(txt)
+
 def count(w: str) -> int:
     """Count syllables in a word"""
     # based on https://datascience.stackexchange.com/a/24865
@@ -218,15 +221,32 @@ def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[interpret.To
             in_comment = not in_comment
         else:
             if not in_comment:
-                new_tokens.append(token)
+                t = interpret.Token(token.t, token.value)
+                new_tokens.append(t)
     return new_tokens
 
-def parse(file_name:str) -> typing.List[interpret.Token]:
+def parse(file_name:str) -> typing.Optional[typing.List[interpret.Token]]:
     """
     Given a filename, produce the tokens of that program
 
     :param file_name: name of program input file
     :returns: list of tokens
     """
-    pass
+    raw = read_file(file_name)
+
+    try:
+        stanzas = make_stanzas(raw)
+    except SyntaxError as e:
+        print_error(e)
+        return None
+    for stanza in stanzas:
+        if not is_valid_haiku(stanza):
+            print_error('Not valid haiku ' + stanza)
+            return None
+
+    tokens = make_tokens(raw)
+    if not is_balanced(tokens):
+        print_error('Yin and yang are not balanced')
+        return None
+    return remove_comments(tokens)
 
