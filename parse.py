@@ -188,7 +188,15 @@ def is_balanced(tokens:typing.List[ParserToken]) -> bool:
     :param tokens: list of parser tokens
     :returns: True if the program is balanced
     """
-    pass
+    yin = 0
+    yang = 0
+    for token in tokens:
+        if token.t == TokenType.INT:
+            if interpret.yin_or_yang(token.value) == interpret.YIN:
+                yin += 1
+            else:
+                yang += 1
+    return yin == yang
 
 def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[interpret.Token]:
     """
