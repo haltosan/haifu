@@ -1,12 +1,67 @@
 import pathlib
 
+import pytest
+
 import interpret
 import parse
 
 
 class TestContract:
     class TestParse:
-        pass
+        tmp_file = 'tmp.haifu'
+
+        def write(self, text):
+            with open(self.tmp_file, 'w') as file:
+                file.write(text)
+
+        def raw_to_out(self, raw):
+            self.write(raw)
+            return parse.parse(self.tmp_file)
+
+        @pytest.fixture(autouse=True)
+        def cleanup(self):
+            open(self.tmp_file, 'w').close()
+
+        def test_parse_just_exit(self):
+            raw = ('heaven, test test test\n'
+                   'longer longer longer test\n'
+                   'longer longer test')
+            out = self.raw_to_out(raw)
+            assert out == [interpret.Token(interpret.TokenType.HEAVEN)], out
+
+        def test_parse_print_123(self):
+            raw = ('one two three count rise\n'
+                   'count rise count rise count heaven,\n'
+                   'longer longer test')
+            out = self.raw_to_out(raw)
+            assert out == [interpret.Token(interpret.TokenType.INT, 1),
+                           interpret.Token(interpret.TokenType.INT, 2),
+                           interpret.Token(interpret.TokenType.INT, 3),
+                           interpret.Token(interpret.TokenType.COUNT),
+                           interpret.Token(interpret.TokenType.RISE),
+                           interpret.Token(interpret.TokenType.COUNT),
+                           interpret.Token(interpret.TokenType.RISE),
+                           interpret.Token(interpret.TokenType.COUNT),
+                           interpret.Token(interpret.TokenType.HEAVEN)], out
+
+        def test_print_var_elements(self):
+            raw = ('tree flame metal ice\n'
+                   'soil spirit, pumpkin spice\n'
+                   'longer longer test')
+            out = self.raw_to_out(raw)
+            assert out == [interpret.Token(interpret.TokenType.VAR,
+                                           interpret.VariableToken('tree', interpret.ElementType.WOOD)),
+                           interpret.Token(interpret.TokenType.VAR,
+                                           interpret.VariableToken('flame', interpret.ElementType.FIRE)),
+                           interpret.Token(interpret.TokenType.VAR,
+                                           interpret.VariableToken('metal', interpret.ElementType.METAL)),
+                           interpret.Token(interpret.TokenType.VAR,
+                                           interpret.VariableToken('ice', interpret.ElementType.WATER)),
+                           interpret.Token(interpret.TokenType.VAR,
+                                           interpret.VariableToken('soil', interpret.ElementType.EARTH)),
+                           interpret.Token(interpret.TokenType.VAR,
+                                           interpret.VariableToken('spirit', interpret.ElementType.EARTH))
+                           ], out
 
     class TestInternals:
         def test_read_file_negative(self):
