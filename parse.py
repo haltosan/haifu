@@ -15,7 +15,8 @@ tokenize
 validate tokens
 """
 
-# TODO restrict vulgar words
+vulgar_words_full = ['cum', 'dick', 'bitch', 'ass', 'anal', 'shit']
+vulgar_words_partial = ['fuck', 'cunt', 'cock', 'pussy', 'penis']
 
 c_dict = cmudict.dict()
 
@@ -115,7 +116,6 @@ def word_to_token(word:str) -> ParserToken:
     element_t = get_element_type(word)
     return ParserToken(TokenType.VAR, VariableToken(word, element_t))
 
-
 def read_file(file_name:str) -> str:
     """
     Read input file and output text
@@ -129,6 +129,22 @@ def read_file(file_name:str) -> str:
     except FileNotFoundError:
         return ''
     return ret
+
+def find_vulgar(raw:str) -> typing.Optional[str]:
+    """
+    Validate a program doesn't contain vulgar words
+
+    :param raw: raw text input
+    :returns: True if the program contains vulgar words
+    """
+    for vulgar in vulgar_words_partial:
+        if vulgar in raw:
+            return vulgar
+    raw = raw.replace('\n', ' ').replace('-', ' ')
+    for word in raw.split(' '):
+        if word in vulgar_words_full:
+            return word
+    return None
 
 def make_stanzas(raw:str) -> typing.List[str]:
     """
@@ -234,6 +250,10 @@ def parse(file_name:str) -> typing.Optional[typing.List[interpret.Token]]:
     """
     raw = read_file(file_name)
 
+    vulgar = find_vulgar(raw)
+    if vulgar is not None:
+        print_error('Program contains vulgar word: ' + vulgar)
+        return None
     try:
         stanzas = make_stanzas(raw)
     except SyntaxError as e:
@@ -241,7 +261,7 @@ def parse(file_name:str) -> typing.Optional[typing.List[interpret.Token]]:
         return None
     for stanza in stanzas:
         if not is_valid_haiku(stanza):
-            print_error('Not valid haiku ' + stanza)
+            print_error('Not valid haiku:\n' + stanza)
             return None
 
     tokens = make_tokens(raw)

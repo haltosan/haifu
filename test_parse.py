@@ -83,6 +83,18 @@ class TestContract:
             assert parse.read_file(file_name) == text, 'Text does not match'
             pathlib.Path(file_name).unlink()
 
+        def test_find_vulgar_positive(self):
+            raw = 'mother fucker'
+            assert parse.find_vulgar(raw) is not None, 'raw contains vulgar'
+
+            raw = 'ass goblin'
+            assert parse.find_vulgar(raw) is not None, 'raw contains vulgar'
+
+        def test_find_vulgar_negative(self):
+            raw = 'brass cumin'
+            out = parse.find_vulgar(raw)
+            assert out is None, 'raw is not vulgar: ' + out
+
         def test_make_stanzas_positive(self):
             text = ('line 1\n'
                     'line 2\n'
