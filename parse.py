@@ -120,11 +120,8 @@ def read_file(file_name:str) -> str:
     :param file_name: name of file containing program
     :returns: string of file content, raw
     """
-    try:
-        with open(file_name, 'r') as file:
-            ret = file.read()
-    except FileNotFoundError:
-        return ''
+    with open(file_name, 'r') as file:
+        ret = file.read()
     return ret
 
 def find_vulgar(raw:str) -> typing.Optional[str]:
@@ -244,6 +241,7 @@ def parse(file_name:str) -> typing.List[interpret.Token]:
 
     :param file_name: name of program input file
     :raises SyntaxError: if the program is syntactically invalid
+    :raises FileNotFoundError: if input file does not exist
     :returns: list of tokens
     """
     raw = read_file(file_name)

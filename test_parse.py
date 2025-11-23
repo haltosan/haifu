@@ -114,7 +114,11 @@ class TestContract:
                 pathlib.Path(file_name).unlink()
             except FileNotFoundError:
                 pass
-            assert parse.read_file(file_name) == '', 'Nonexistent files MUST be blank'
+            try:
+                parse.read_file(file_name)
+            except FileNotFoundError:
+                return
+            assert False, 'File does not exist, should error'
 
         def test_read_file_positive(self):
             file_name = 'full.txt'
