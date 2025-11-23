@@ -44,7 +44,7 @@ class TestContract:
                            interpret.Token(interpret.TokenType.COUNT),
                            interpret.Token(interpret.TokenType.HEAVEN)], out
 
-        def test_print_var_elements(self):
+        def test_parse_print_var_elements(self):
             raw = ('tree flame metal ice\n'
                    'soil spirit, and pumpkin spice\n'
                    'longer longer test')
@@ -62,6 +62,50 @@ class TestContract:
                            interpret.Token(interpret.TokenType.VAR,
                                            interpret.VariableToken('spirit', interpret.ElementType.EARTH))
                            ], out
+
+        def test_parse_vulgar(self):
+            raw = ('fuck longer longer\n'
+                   'longer longer longer test\n'
+                   'longer longer test')
+            try:
+                self.raw_to_out(raw)
+            except SyntaxError as e:
+                assert 'Program contains vulgar word' in e.msg
+                return
+            assert False, 'raw contains vulgar words'
+
+        def test_parse_invalid_stanzas(self):
+            raw = ('longer longer test\n'
+                   'longer longer longer test')
+            try:
+                self.raw_to_out(raw)
+            except SyntaxError as e:
+                assert 'Improper number of lines' in e.msg
+                return
+            assert False, 'raw does not have valid line count'
+
+        def test_parse_invalid_haiku(self):
+            raw = ('longer longer test\n'
+                   'wrong\n'
+                   'longer longer test')
+            try:
+                self.raw_to_out(raw)
+            except SyntaxError as e:
+                assert 'Not valid haiku' in e.msg
+                return
+            assert False, 'raw does not follow haiku structure'
+
+        def test_parse_yin_yang_imbalance(self):
+            raw = ('one two three four five\n'
+                   'heaven heaven heaven rise\n'
+                   'heaven heaven rise')
+            try:
+                self.raw_to_out(raw)
+            except SyntaxError as e:
+                assert e.msg == 'Yin and yang are not balanced'
+                return
+            assert False, 'raw has imbalance of yin and yang'
+
 
     class TestInternals:
         def test_read_file_negative(self):

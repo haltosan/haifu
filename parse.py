@@ -20,9 +20,6 @@ vulgar_words_partial = ['fuck', 'cunt', 'cock', 'pussy', 'penis']
 
 c_dict = cmudict.dict()
 
-def print_error(txt):
-    print(txt)
-
 def count(w: str) -> int:
     """Count syllables in a word"""
     # based on https://datascience.stackexchange.com/a/24865
@@ -241,32 +238,29 @@ def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[interpret.To
                 new_tokens.append(t)
     return new_tokens
 
-def parse(file_name:str) -> typing.Optional[typing.List[interpret.Token]]:
+def parse(file_name:str) -> typing.List[interpret.Token]:
     """
     Given a filename, produce the tokens of that program
 
     :param file_name: name of program input file
+    :raises SyntaxError: if the program is syntactically invalid
     :returns: list of tokens
     """
     raw = read_file(file_name)
 
     vulgar = find_vulgar(raw)
     if vulgar is not None:
-        print_error('Program contains vulgar word: ' + vulgar)
-        return None
+        raise SyntaxError('Program contains vulgar word: ' + vulgar)
     try:
         stanzas = make_stanzas(raw)
     except SyntaxError as e:
-        print_error(e)
-        return None
+        raise e
     for stanza in stanzas:
         if not is_valid_haiku(stanza):
-            print_error('Not valid haiku:\n' + stanza)
-            return None
+            raise SyntaxError('Not valid haiku:\n' + stanza)
 
     tokens = make_tokens(raw)
     if not is_balanced(tokens):
-        print_error('Yin and yang are not balanced')
-        return None
+        raise SyntaxError('Yin and yang are not balanced')
     return remove_comments(tokens)
 
