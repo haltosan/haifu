@@ -30,8 +30,8 @@ class TestContract:
             assert out == [interpret.Token(interpret.TokenType.HEAVEN)], out
 
         def test_parse_print_123(self):
-            raw = ('one two three count rise\n'
-                   'count rise count heaven, four test\n'
+            raw = ('heaven count rise count\n'
+                   'rise count three two one, four test\n'
                    'longer longer test')
             out = self.raw_to_out(raw)
             assert out == [interpret.Token(interpret.TokenType.INT, 1),
@@ -49,19 +49,20 @@ class TestContract:
                    'soil spirit, and pumpkin spice\n'
                    'longer longer test')
             out = self.raw_to_out(raw)
-            assert out == [interpret.Token(interpret.TokenType.VAR,
-                                           interpret.VariableToken('tree', interpret.ElementType.WOOD)),
-                           interpret.Token(interpret.TokenType.VAR,
-                                           interpret.VariableToken('flame', interpret.ElementType.FIRE)),
-                           interpret.Token(interpret.TokenType.VAR,
-                                           interpret.VariableToken('metal', interpret.ElementType.METAL)),
-                           interpret.Token(interpret.TokenType.VAR,
-                                           interpret.VariableToken('ice', interpret.ElementType.WATER)),
-                           interpret.Token(interpret.TokenType.VAR,
-                                           interpret.VariableToken('soil', interpret.ElementType.EARTH)),
-                           interpret.Token(interpret.TokenType.VAR,
-                                           interpret.VariableToken('spirit', interpret.ElementType.EARTH))
-                           ], out
+            assert out == [
+                interpret.Token(interpret.TokenType.VAR,
+                                interpret.VariableToken('spirit', interpret.ElementType.EARTH)),
+                interpret.Token(interpret.TokenType.VAR,
+                                interpret.VariableToken('soil', interpret.ElementType.EARTH)),
+                interpret.Token(interpret.TokenType.VAR,
+                                interpret.VariableToken('ice', interpret.ElementType.WATER)),
+                interpret.Token(interpret.TokenType.VAR,
+                                interpret.VariableToken('metal', interpret.ElementType.METAL)),
+                interpret.Token(interpret.TokenType.VAR,
+                                interpret.VariableToken('flame', interpret.ElementType.FIRE)),
+                interpret.Token(interpret.TokenType.VAR,
+                                interpret.VariableToken('tree', interpret.ElementType.WOOD))
+            ], out
 
         def test_parse_vulgar(self):
             raw = ('fuck longer longer\n'

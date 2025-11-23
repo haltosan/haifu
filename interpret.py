@@ -80,7 +80,7 @@ class VariableToken:
     def __eq__(self, other):
         if not isinstance(other, VariableToken):
             return NotImplemented
-        return self.name == other.name, self.init_element == other.init_element
+        return self.name == other.name and self.init_element == other.init_element
 
 
 class VariableStruct:

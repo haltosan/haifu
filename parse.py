@@ -29,6 +29,7 @@ def count(w: str) -> int:
 
 def count_line(line:str) -> typing.List[int]:
     line = line.replace('-', ' ')  # split hyphenated words
+    line = line.replace(',', '')  # remove comas
     words = line.split(' ')
     return [count(word) for word in words]
 
@@ -177,7 +178,8 @@ def is_valid_haiku(stanza:str) -> bool:
     :returns: True if the stanza is valid
     """
     lines = stanza.split('\n')
-    counts = [sum(count_line(line)) for line in lines]
+    counts = [count_line(line) for line in lines]
+    counts = [sum(i) for i in counts]
     return counts == [5, 7, 5]
 
 def make_tokens(raw_valid:str) -> typing.List[ParserToken]:
@@ -260,5 +262,5 @@ def parse(file_name:str) -> typing.List[interpret.Token]:
     tokens = make_tokens(raw)
     if not is_balanced(tokens):
         raise SyntaxError('Yin and yang are not balanced')
-    return remove_comments(tokens)
+    return remove_comments(tokens)[::-1]  # programs are reversed
 
