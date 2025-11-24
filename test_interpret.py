@@ -1,5 +1,3 @@
-from io import StringIO
-
 import interpret
 from haifu_common import TokenType, ElementType, Token, VariableToken
 

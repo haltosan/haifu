@@ -1,7 +1,4 @@
 number-parser
-pytest
-cmudict==1.1.1
-importlib-metadata==6.11.0
-importlib_resources==6.5.2
-syllables==1.1.1
-zipp==3.23.0
+cmudict~=1.1.2
+syllables~=1.1.4
+pytest~=9.0.1
