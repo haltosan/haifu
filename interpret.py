@@ -1,8 +1,14 @@
+import select
 from math import ceil, floor
 from enum import Enum
 import typing
 import sys
 from random import randint
+
+import haifu_common
+import parse
+from haifu_common import TokenType, ElementType, Token, VariableToken
+
 # TODO use typing hints properly on everything
 # TODO use docstrings
 # TODO formatting
@@ -13,37 +19,6 @@ YANG = 1
 RAND_MIN = 0
 RAND_MAX = 2**32
 
-class TokenType(Enum):
-    HEAVEN = 0
-    PROMOTE = 1
-    DEMOTE = 2
-    BLOSSOM = 3
-    RISE = 4
-    FALL = 5
-    LISTEN = 6
-    SPEAK = 7
-    COUNT = 8
-    CREATE = 9
-    DESTROY = 10
-    FEAR = 11
-    LOVE = 12
-    BECOME = 13
-    LIKE = 14
-    NEGATIVE = 15
-    OPERATE = 16
-    PUNC = 17
-    INT = 18
-    VAR = 19
-    RAND = 20
-
-
-class ElementType(Enum):
-    WOOD = 0
-    FIRE = 1
-    EARTH = 2
-    METAL = 3
-    WATER = 4
-
 
 class ElementRelationship(Enum):
     CREATE = 0
@@ -51,36 +26,6 @@ class ElementRelationship(Enum):
     FEAR = 2
     LOVE = 3
     SAME = 4
-
-class Token:
-    t:TokenType = None
-    value:typing.Any = None
-
-    def __init__(self, t, value=None):
-        self.t = t
-        self.value = value
-
-    def __eq__(self, other):
-        if not isinstance(other, Token):
-            return NotImplemented
-        return self.t == other.t and self.value == other.value
-
-    def __repr__(self):
-        return f"Token(t='{self.t}', value='{self.value}')"
-
-
-class VariableToken:
-    name:str = None
-    init_element:ElementType = None
-
-    def __init__(self, name, init_element:ElementType=ElementType.EARTH):
-        self.name = name
-        self.init_element = init_element
-
-    def __eq__(self, other):
-        if not isinstance(other, VariableToken):
-            return NotImplemented
-        return self.name == other.name and self.init_element == other.init_element
 
 
 class VariableStruct:
@@ -93,6 +38,7 @@ class VariableStruct:
 
 
 data: typing.Dict[str, VariableStruct] = dict()
+input_buffer: typing.List[str] = []
 
 def init_rand(x: typing.Any) -> typing.Any:
     if type(x) is Token and x.t == TokenType.RAND:
@@ -116,7 +62,8 @@ def yin_or_yang(x: typing.Any) -> typing.Optional[int]:
         x = strive_num(x)
     return YIN if x % 2 == 0 else YANG
 
-def element_relationship(element_a:ElementType, element_b:ElementType=None, relationship_type:ElementRelationship=None) -> typing.Optional[typing.Union[ElementType, ElementRelationship]]:
+def element_relationship(element_a: ElementType, element_b: ElementType =None, relationship_type:ElementRelationship=None) -> typing.Optional[typing.Union[
+    ElementType, ElementRelationship]]:
     create_relationship = {
         ElementType.EARTH: ElementType.METAL,
         ElementType.METAL: ElementType.WATER,
@@ -162,7 +109,7 @@ def element_relationship(element_a:ElementType, element_b:ElementType=None, rela
     except KeyError:
         return None
 
-def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
+def op(a: Token, b: Token) -> typing.Optional[typing.Union[float, int]]:
     global data
     try:
         a_name:str = a.value.name
@@ -201,7 +148,7 @@ def op(a:Token, b:Token) -> typing.Optional[typing.Union[float, int]]:
 
 def run(bureaucracy, debug=False):
     """expect program of form [lowest, ... highest]"""
-    global data
+    global data, input_buffer
 
     bureaucrat = -1  # deal with fence posting
     delegate = 0
@@ -219,7 +166,7 @@ def run(bureaucracy, debug=False):
             delegate = bureaucrat
         if bureaucrat >= len(bureaucracy):
             return
-        rung:Token = bureaucracy[bureaucrat]
+        rung: Token = bureaucracy[bureaucrat]
         match rung.t:
             case TokenType.HEAVEN:
                 dprint('halt')
@@ -231,7 +178,7 @@ def run(bureaucracy, debug=False):
                     sign = -1
                 else:
                     sign = 1
-                d_rung:Token = bureaucracy[delegate]
+                d_rung: Token = bureaucracy[delegate]
                 diff:int = 0
                 match d_rung.t:
                     case TokenType.INT:
@@ -283,7 +230,7 @@ def run(bureaucracy, debug=False):
                 else:
                     sign = 1
 
-                lower:Token = bureaucracy[bureaucrat - 1]
+                lower: Token = bureaucracy[bureaucrat - 1]
                 diff:int = 1
                 match lower.t:
                     case TokenType.INT:
@@ -303,9 +250,29 @@ def run(bureaucracy, debug=False):
 
             case TokenType.LISTEN:
                 dprint('listen')
-                raise NotImplementedError('Higher levels needed')
-                # TODO use earlier layers to make it a token
-                # TODO how on earth do you detect if there's no stdin????
+                if len(input_buffer) > 0:
+                    raw = input_buffer.pop(0)
+                # from https://stackoverflow.com/a/3763257
+                elif sys.stdin.isatty() or \
+                    select.select([sys.stdin, ], [], [])[0]:
+                    # there is an active tty connected
+                    # or there is currently data in stdin
+                    line = input().split(' ')
+                    raw = line.pop(0)
+                    input_buffer = input_buffer + line
+                else:
+                    # no data, move rung to bottom
+                    rung_above = bureaucracy.pop(bureaucrat+1)
+                    bureaucracy.insert(0, rung_above)
+                    bureaucrat += 1
+                    delegate += 1
+                    continue
+                parse_token = parse.word_to_token(raw)
+                if parse_token.t == haifu_common.TokenType.COMMA:
+                    continue
+                bureaucracy.insert(0, Token(parse_token.t, parse_token.value))
+                bureaucrat += 1
+                delegate += 1
 
             case TokenType.COUNT | TokenType.SPEAK:
                 if rung.t == TokenType.SPEAK:
@@ -317,7 +284,7 @@ def run(bureaucracy, debug=False):
                     def cast(x):
                         return x
 
-                d_rung:Token = bureaucracy[delegate]
+                d_rung: Token = bureaucracy[delegate]
                 match d_rung.t:
                     case TokenType.INT:
                         print(cast(d_rung.value), end='')
@@ -333,12 +300,12 @@ def run(bureaucracy, debug=False):
 
             case TokenType.CREATE | TokenType.DESTROY | TokenType.FEAR | TokenType.LOVE:
                 dprint('element change')
-                d_rung:Token = bureaucracy[delegate]
+                d_rung: Token = bureaucracy[delegate]
                 if d_rung.t != TokenType.VAR:
                     continue
                 var_name:str = d_rung.value.name
                 try:
-                    current_element:ElementType = data[var_name].element
+                    current_element: ElementType = data[var_name].element
                 except KeyError:
                     continue
                 relationship:ElementRelationship = ElementRelationship.CREATE
@@ -356,7 +323,7 @@ def run(bureaucracy, debug=False):
 
             case TokenType.BECOME:
                 dprint('become')
-                d_rung:Token = bureaucracy[delegate]
+                d_rung: Token = bureaucracy[delegate]
                 match d_rung.t:
                     case TokenType.INT:
                         value:int = d_rung.value
@@ -377,12 +344,12 @@ def run(bureaucracy, debug=False):
                                 continue
                             else:
                                 data[var_name].value = strive_num(value)
-                            var_type:ElementType = var.element
+                            var_type: ElementType = var.element
                             data[var_name].element = element_relationship(element_a=var_type, relationship_type=ElementRelationship.CREATE)
 
             case TokenType.LIKE:
                 dprint('like')
-                change:Token = bureaucracy[bureaucrat - 1]
+                change: Token = bureaucracy[bureaucrat - 1]
                 if change.t != TokenType.VAR:
                     continue
                 change_var_name:str = change.value.name
@@ -390,7 +357,7 @@ def run(bureaucracy, debug=False):
                     continue
                 search:int = delegate
                 while search >= 0:
-                    d_rung:Token = bureaucracy[search]
+                    d_rung: Token = bureaucracy[search]
                     match d_rung.t:
                         case TokenType.INT:
                             data[change_var_name].value = d_rung.value
@@ -407,7 +374,7 @@ def run(bureaucracy, debug=False):
 
             case TokenType.NEGATIVE:
                 dprint('negative')
-                d_rung:Token = bureaucracy[delegate]
+                d_rung: Token = bureaucracy[delegate]
                 match d_rung.t:
                     case TokenType.INT:
                         bureaucracy[delegate].value = - d_rung.value
@@ -428,7 +395,7 @@ def run(bureaucracy, debug=False):
                 result = op(a, b)
                 if result is None:
                     continue
-                b_var:VariableToken = b.value
+                b_var: VariableToken = b.value
                 b_name = b_var.name
                 data[b_name].value = result
 

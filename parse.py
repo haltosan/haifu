@@ -1,12 +1,12 @@
 import typing
-from enum import Enum
 
+import cmudict
 import number_parser
 from syllables import estimate
-import cmudict
 
+import haifu_common
 import interpret
-from interpret import TokenType, ElementType, VariableToken
+from haifu_common import TokenType, ElementType, VariableToken
 
 """
 read
@@ -33,11 +33,8 @@ def count_line(line:str) -> typing.List[int]:
     words = line.split(' ')
     return [count(word) for word in words]
 
-class ParserTokenType(Enum):
-    COMMA = 100
-
 class ParserToken:
-    t:ParserTokenType = None
+    t:TokenType = None
     value:typing.Any = None
 
     def __init__(self, t, value=None):
@@ -95,7 +92,7 @@ def get_element_type(word:str) -> ElementType:
 
 def word_to_token(word:str) -> ParserToken:
     if word == ',':
-        return ParserToken(ParserTokenType.COMMA)
+        return ParserToken(TokenType.COMMA)
     word = word.lower()
     # convert numbers
     word = number_parser.parse(word)  # convert number word to number literal
@@ -219,7 +216,7 @@ def is_balanced(tokens:typing.List[ParserToken]) -> bool:
                 yang += 1
     return yin == yang
 
-def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[interpret.Token]:
+def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[haifu_common.Token]:
     """
     Remove comments from a program
 
@@ -229,15 +226,15 @@ def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[interpret.To
     new_tokens = []
     in_comment = False
     for token in tokens:
-        if token.t == ParserTokenType.COMMA:
+        if token.t == TokenType.COMMA:
             in_comment = not in_comment
         else:
             if not in_comment:
-                t = interpret.Token(token.t, token.value)
+                t = haifu_common.Token(token.t, token.value)
                 new_tokens.append(t)
     return new_tokens
 
-def parse(file_name:str) -> typing.List[interpret.Token]:
+def parse(file_name:str) -> typing.List[haifu_common.Token]:
     """
     Given a filename, produce the tokens of that program
 

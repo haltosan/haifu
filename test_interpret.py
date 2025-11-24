@@ -1,5 +1,7 @@
+from io import StringIO
+
 import interpret
-from interpret import Token, TokenType, VariableToken, ElementType
+from haifu_common import TokenType, ElementType, Token, VariableToken
 
 just_exit = [Token(TokenType.HEAVEN)]
 print_123 = [Token(TokenType.INT, 1), Token(TokenType.INT, 2), Token(TokenType.INT, 3),
@@ -319,14 +321,6 @@ class TestRun:
         interpret.run(clamping, debug=True)
         out, err = capsys.readouterr()
         assert out == '', err
-
-    def test_run_listen(self, capsys):
-        try:
-            interpret.run([Token(TokenType.LISTEN)], debug=True)
-            _, err = capsys.readouterr()
-            assert False, err
-        except NotImplementedError:
-            assert True
 
 
 class TestInternal:

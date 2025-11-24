@@ -2,7 +2,7 @@ import pathlib
 
 import pytest
 
-import interpret
+import haifu_common
 import parse
 
 
@@ -27,22 +27,22 @@ class TestContract:
                    'longer longer longer test\n'
                    'longer longer test')
             out = self.raw_to_out(raw)
-            assert out == [interpret.Token(interpret.TokenType.HEAVEN)], out
+            assert out == [haifu_common.Token(haifu_common.TokenType.HEAVEN)], out
 
         def test_parse_print_123(self):
             raw = ('heaven count rise count\n'
                    'rise count three two one, four test\n'
                    'longer longer test')
             out = self.raw_to_out(raw)
-            assert out == [interpret.Token(interpret.TokenType.INT, 1),
-                           interpret.Token(interpret.TokenType.INT, 2),
-                           interpret.Token(interpret.TokenType.INT, 3),
-                           interpret.Token(interpret.TokenType.COUNT),
-                           interpret.Token(interpret.TokenType.RISE),
-                           interpret.Token(interpret.TokenType.COUNT),
-                           interpret.Token(interpret.TokenType.RISE),
-                           interpret.Token(interpret.TokenType.COUNT),
-                           interpret.Token(interpret.TokenType.HEAVEN)], out
+            assert out == [haifu_common.Token(haifu_common.TokenType.INT, 1),
+                           haifu_common.Token(haifu_common.TokenType.INT, 2),
+                           haifu_common.Token(haifu_common.TokenType.INT, 3),
+                           haifu_common.Token(haifu_common.TokenType.COUNT),
+                           haifu_common.Token(haifu_common.TokenType.RISE),
+                           haifu_common.Token(haifu_common.TokenType.COUNT),
+                           haifu_common.Token(haifu_common.TokenType.RISE),
+                           haifu_common.Token(haifu_common.TokenType.COUNT),
+                           haifu_common.Token(haifu_common.TokenType.HEAVEN)], out
 
         def test_parse_print_var_elements(self):
             raw = ('tree flame metal ice\n'
@@ -50,18 +50,18 @@ class TestContract:
                    'longer longer test')
             out = self.raw_to_out(raw)
             assert out == [
-                interpret.Token(interpret.TokenType.VAR,
-                                interpret.VariableToken('spirit', interpret.ElementType.EARTH)),
-                interpret.Token(interpret.TokenType.VAR,
-                                interpret.VariableToken('soil', interpret.ElementType.EARTH)),
-                interpret.Token(interpret.TokenType.VAR,
-                                interpret.VariableToken('ice', interpret.ElementType.WATER)),
-                interpret.Token(interpret.TokenType.VAR,
-                                interpret.VariableToken('metal', interpret.ElementType.METAL)),
-                interpret.Token(interpret.TokenType.VAR,
-                                interpret.VariableToken('flame', interpret.ElementType.FIRE)),
-                interpret.Token(interpret.TokenType.VAR,
-                                interpret.VariableToken('tree', interpret.ElementType.WOOD))
+                haifu_common.Token(haifu_common.TokenType.VAR,
+                                 haifu_common.VariableToken('spirit', haifu_common.ElementType.EARTH)),
+                haifu_common.Token(haifu_common.TokenType.VAR,
+                                 haifu_common.VariableToken('soil', haifu_common.ElementType.EARTH)),
+                haifu_common.Token(haifu_common.TokenType.VAR,
+                                 haifu_common.VariableToken('ice', haifu_common.ElementType.WATER)),
+                haifu_common.Token(haifu_common.TokenType.VAR,
+                                 haifu_common.VariableToken('metal', haifu_common.ElementType.METAL)),
+                haifu_common.Token(haifu_common.TokenType.VAR,
+                                 haifu_common.VariableToken('flame', haifu_common.ElementType.FIRE)),
+                haifu_common.Token(haifu_common.TokenType.VAR,
+                                 haifu_common.VariableToken('tree', haifu_common.ElementType.WOOD))
             ], out
 
         def test_parse_vulgar(self):
@@ -203,78 +203,78 @@ class TestContract:
         def test_make_tokens_basic(self):
             raw = 'heaven more reduce petal up descend hear speak some'
             out = parse.make_tokens(raw)
-            assert out == [parse.ParserToken(interpret.TokenType.HEAVEN),
-                           parse.ParserToken(interpret.TokenType.PROMOTE),
-                           parse.ParserToken(interpret.TokenType.DEMOTE),
-                           parse.ParserToken(interpret.TokenType.BLOSSOM),
-                           parse.ParserToken(interpret.TokenType.RISE),
-                           parse.ParserToken(interpret.TokenType.FALL),
-                           parse.ParserToken(interpret.TokenType.LISTEN),
-                           parse.ParserToken(interpret.TokenType.SPEAK),
-                           parse.ParserToken(interpret.TokenType.RAND)], out
+            assert out == [parse.ParserToken(haifu_common.TokenType.HEAVEN),
+                           parse.ParserToken(haifu_common.TokenType.PROMOTE),
+                           parse.ParserToken(haifu_common.TokenType.DEMOTE),
+                           parse.ParserToken(haifu_common.TokenType.BLOSSOM),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.FALL),
+                           parse.ParserToken(haifu_common.TokenType.LISTEN),
+                           parse.ParserToken(haifu_common.TokenType.SPEAK),
+                           parse.ParserToken(haifu_common.TokenType.RAND)], out
 
         def test_make_tokens_numbers(self):
             raw = 'zero a dozen century fifteenth three-\nhundred-fifty-two'
             out = parse.make_tokens(raw)
-            assert out == [parse.ParserToken(interpret.TokenType.INT, 0),
-                           parse.ParserToken(interpret.TokenType.INT, 1),
-                           parse.ParserToken(interpret.TokenType.INT, 12),
-                           parse.ParserToken(interpret.TokenType.INT, 100),
-                           parse.ParserToken(interpret.TokenType.INT, 15),
-                           parse.ParserToken(interpret.TokenType.INT, 352)], out
+            assert out == [parse.ParserToken(haifu_common.TokenType.INT, 0),
+                           parse.ParserToken(haifu_common.TokenType.INT, 1),
+                           parse.ParserToken(haifu_common.TokenType.INT, 12),
+                           parse.ParserToken(haifu_common.TokenType.INT, 100),
+                           parse.ParserToken(haifu_common.TokenType.INT, 15),
+                           parse.ParserToken(haifu_common.TokenType.INT, 352)], out
 
         def test_make_tokens_var(self):
             raw = 'tree flame rock metal bogus'
             out = parse.make_tokens(raw)
-            assert out == [parse.ParserToken(interpret.TokenType.VAR,
-                                             interpret.VariableToken('tree', interpret.ElementType.WOOD)),
-                           parse.ParserToken(interpret.TokenType.VAR,
-                                             interpret.VariableToken('flame', interpret.ElementType.FIRE)),
-                           parse.ParserToken(interpret.TokenType.VAR,
-                                             interpret.VariableToken('rock', interpret.ElementType.EARTH)),
-                           parse.ParserToken(interpret.TokenType.VAR,
-                                             interpret.VariableToken('metal', interpret.ElementType.METAL)),
-                           parse.ParserToken(interpret.TokenType.VAR,
-                                             interpret.VariableToken('bogus', interpret.ElementType.EARTH))
+            assert out == [parse.ParserToken(haifu_common.TokenType.VAR,
+                                             haifu_common.VariableToken('tree', haifu_common.ElementType.WOOD)),
+                           parse.ParserToken(haifu_common.TokenType.VAR,
+                                             haifu_common.VariableToken('flame', haifu_common.ElementType.FIRE)),
+                           parse.ParserToken(haifu_common.TokenType.VAR,
+                                             haifu_common.VariableToken('rock', haifu_common.ElementType.EARTH)),
+                           parse.ParserToken(haifu_common.TokenType.VAR,
+                                             haifu_common.VariableToken('metal', haifu_common.ElementType.METAL)),
+                           parse.ParserToken(haifu_common.TokenType.VAR,
+                                             haifu_common.VariableToken('bogus', haifu_common.ElementType.EARTH))
                            ], out
 
         def test_make_tokens_comments(self):
             raw = 'heaven, some, not'
             out = parse.make_tokens(raw)
-            assert out == [parse.ParserToken(interpret.TokenType.HEAVEN),
-                           parse.ParserToken(parse.ParserTokenType.COMMA),
-                           parse.ParserToken(interpret.TokenType.RAND),
-                           parse.ParserToken(parse.ParserTokenType.COMMA),
-                           parse.ParserToken(interpret.TokenType.NEGATIVE)], out
+            assert out == [parse.ParserToken(haifu_common.TokenType.HEAVEN),
+                           parse.ParserToken(haifu_common.TokenType.COMMA),
+                           parse.ParserToken(haifu_common.TokenType.RAND),
+                           parse.ParserToken(haifu_common.TokenType.COMMA),
+                           parse.ParserToken(haifu_common.TokenType.NEGATIVE)], out
 
         def test_is_balanced_negative(self):
-            program = [parse.ParserToken(interpret.TokenType.INT, 1),
-                       parse.ParserToken(parse.ParserTokenType.COMMA),
-                       parse.ParserToken(interpret.TokenType.INT, 2),
-                       parse.ParserToken(parse.ParserTokenType.COMMA),
-                       parse.ParserToken(interpret.TokenType.INT, 2),
-                       parse.ParserToken(interpret.TokenType.RAND)]
+            program = [parse.ParserToken(haifu_common.TokenType.INT, 1),
+                       parse.ParserToken(haifu_common.TokenType.COMMA),
+                       parse.ParserToken(haifu_common.TokenType.INT, 2),
+                       parse.ParserToken(haifu_common.TokenType.COMMA),
+                       parse.ParserToken(haifu_common.TokenType.INT, 2),
+                       parse.ParserToken(haifu_common.TokenType.RAND)]
             assert parse.is_balanced(program) == False, 'Yin/yang values are 2/1, not 1/1'
 
         def test_is_balanced_positive(self):
-            program = [parse.ParserToken(parse.ParserTokenType.COMMA),
-                       parse.ParserToken(interpret.TokenType.RAND),
-                       parse.ParserToken(parse.ParserTokenType.COMMA)]
+            program = [parse.ParserToken(haifu_common.TokenType.COMMA),
+                       parse.ParserToken(haifu_common.TokenType.RAND),
+                       parse.ParserToken(haifu_common.TokenType.COMMA)]
             assert parse.is_balanced(program), '0 values is balanced'
-            program.append(parse.ParserToken(interpret.TokenType.INT, 1))
-            program.append(parse.ParserToken(interpret.TokenType.INT, 2))
+            program.append(parse.ParserToken(haifu_common.TokenType.INT, 1))
+            program.append(parse.ParserToken(haifu_common.TokenType.INT, 2))
             assert parse.is_balanced(program), '1 of each is balanced'
 
         def test_remove_comments(self):
             program = []
             assert parse.remove_comments(program) == [], 'Empty is unchanged'
-            program = [parse.ParserToken(parse.ParserTokenType.COMMA),
-                       parse.ParserToken(interpret.TokenType.PUNC),
-                       parse.ParserToken(parse.ParserTokenType.COMMA)]
+            program = [parse.ParserToken(haifu_common.TokenType.COMMA),
+                       parse.ParserToken(haifu_common.TokenType.PUNC),
+                       parse.ParserToken(haifu_common.TokenType.COMMA)]
             assert parse.remove_comments(program) == [], 'Only comments is empty'
-            program.append(parse.ParserToken(interpret.TokenType.PUNC))
+            program.append(parse.ParserToken(haifu_common.TokenType.PUNC))
             result = parse.remove_comments(program)
-            assert result == [interpret.Token(interpret.TokenType.PUNC)]
+            assert result == [haifu_common.Token(haifu_common.TokenType.PUNC)]
 
 
 class TestLineCoverage:
