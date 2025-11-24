@@ -8,14 +8,10 @@ import haifu_common
 import interpret
 from haifu_common import TokenType, ElementType, VariableToken
 
-"""
-read
-validate text
-tokenize
-validate tokens
-"""
 
+# Reject only if the word is on its own (cumin does not get rejected)
 vulgar_words_full = ['cum', 'dick', 'bitch', 'ass', 'anal', 'shit']
+# Reject if the word appears in any word (fucker is rejected)
 vulgar_words_partial = ['fuck', 'cunt', 'cock', 'pussy', 'penis']
 
 c_dict = cmudict.dict()
