@@ -8,7 +8,7 @@ import parse
 
 class TestContract:
     class TestParse:
-        tmp_file = 'tmp.haifu'
+        tmp_file = '../tmp.haifu'
 
         def write(self, text):
             with open(self.tmp_file, 'w') as file:
