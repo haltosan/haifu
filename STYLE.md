@@ -46,4 +46,4 @@ English docs SHOULD follow similar conventions as the README.
 Issues are GitHub issues.  
 Feature requests MUST start with 'Feature request - ' in the issue title.  
 Bug issue titles MUST be focused on the issue behaviour. Ex: 'interpreter crashes on divide by 0' instead of 'fix the math'.  
-Issues MUST be resolved with a pull request from a non-master branch to master.  
+Issues SHOULD be resolved with a pull request from a non-master branch to master. Exceptions include issues that don't need a commit.  
