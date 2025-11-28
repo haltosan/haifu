@@ -103,6 +103,9 @@ def word_to_token(word:str) -> ParserToken:
     for keyword in basic_words:
         if word in keyword[1]:
             return ParserToken(keyword[0])
+    # if it's not a word, assume punctuation
+    if not word.isalpha():
+        return ParserToken(TokenType.PUNC)
     # else variable
     element_t = get_element_type(word)
     return ParserToken(TokenType.VAR, VariableToken(word, element_t))
