@@ -163,17 +163,17 @@ def make_stanzas(raw:str) -> typing.List[str]:
             buf = []
     return stanzas
 
-def is_valid_haiku(stanza:str) -> bool:
+def count_haiku(stanza:str) -> typing.List[int]:
     """
-    Validate a haiku follows the 5-7-5 syllable pattern
+    Count syllables in haiku
 
-    :param stanza: single stanza to validate
-    :returns: True if the stanza is valid
+    :param stanza: single stanza to count
+    :returns: list of syllable count for each line
     """
     lines = stanza.split('\n')
     counts = [count_line(line) for line in lines]
     counts = [sum(i) for i in counts]
-    return counts == [5, 7, 5]
+    return counts
 
 def make_tokens(raw_valid:str) -> typing.List[ParserToken]:
     """
@@ -249,8 +249,9 @@ def parse(file_name:str) -> typing.List[haifu_common.Token]:
     except SyntaxError as e:
         raise e
     for stanza in stanzas:
-        if not is_valid_haiku(stanza):
-            raise SyntaxError('Not valid haiku:\n' + stanza)
+        counts = count_haiku(stanza)
+        if counts != [5, 7, 5]:
+            raise SyntaxError('Not a valid haiku. Syllable count is ' + str(counts) + '\n' + stanza)
 
     tokens = make_tokens(raw)
     if not is_balanced(tokens):
