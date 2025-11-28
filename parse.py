@@ -26,7 +26,7 @@ def count(w: str) -> int:
 def count_line(line:str) -> typing.List[int]:
     line = line.replace('-', ' ')  # split hyphenated words
     line = line.replace(',', '')  # remove comas
-    words = line.split(' ')
+    words = [i for i in line.split(' ') if i != '']  # remove empty words from syllable count
     return [count(word) for word in words]
 
 class ParserToken:
