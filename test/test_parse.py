@@ -194,6 +194,11 @@ class TestContract:
                     'the final test line')
             assert parse.count_haiku(text) == [5, 7, 5], 'Stanza follows 5-7-5 pattern'
 
+            text = ('print print print - heaven\n'
+                    'count one print - age, longer test\n'
+                    'longer longer test')
+            assert parse.count_haiku(text) == [5, 7, 5], 'Stanza follows 5-7-5 pattern'
+
         def test_is_valid_haiku_negative(self):
             text = ('this is not a haiku\n'
                     'this is another test line\n'
