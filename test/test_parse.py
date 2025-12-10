@@ -205,6 +205,13 @@ class TestContract:
                     'the final test line')
             assert parse.count_haiku(text) == [6, 7, 5], 'Stanza is 6-7-5'
 
+        def test_count_haiku_punc(self):
+            raw = ('longer - longer. test,\n'
+                   'longer longer! longer? test!\n'
+                   'longer, twenty-one.')
+            assert parse.count_haiku(raw) == [5, 7, 5], 'Stanza is 5-7-5'
+
+
         def test_make_tokens_basic(self):
             raw = 'heaven more reduce petal up descend hear speak some'
             out = parse.make_tokens(raw)
@@ -251,6 +258,28 @@ class TestContract:
                            parse.ParserToken(haifu_common.TokenType.RAND),
                            parse.ParserToken(haifu_common.TokenType.COMMA),
                            parse.ParserToken(haifu_common.TokenType.NEGATIVE)], out
+
+        def test_make_tokens_punc(self):
+            raw = ('ascend - ascend rise.\n'
+                   'ascend ascend! ascend? two!\n'
+                   'ascend, twenty-one.')
+            out = parse.make_tokens(raw)
+            assert out == [parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.INT, 2),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.COMMA),
+                           parse.ParserToken(haifu_common.TokenType.INT, 21),
+                           parse.ParserToken(haifu_common.TokenType.PUNC)], out
 
         def test_is_balanced_negative(self):
             program = [parse.ParserToken(haifu_common.TokenType.INT, 1),

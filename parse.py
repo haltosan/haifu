@@ -25,7 +25,7 @@ def count(w: str) -> int:
 
 def count_line(line:str) -> typing.List[int]:
     line = line.replace('-', ' ')  # split hyphenated words
-    line = line.replace(',', '')  # remove comas
+    line = ''.join([i for i in line if i.isalpha() or i == ' '])  # filter for alpha characters
     words = [i for i in line.split(' ') if i != '']  # remove empty words from syllable count
     return [count(word) for word in words]
 
@@ -191,9 +191,9 @@ def make_tokens(raw_valid:str) -> typing.List[ParserToken]:
     words = raw_valid.split(' ')
     tokens = []
     for word in words:
-        if ',' in word:
+        if len(word) > 1 and not word[-1].isalpha():  # punctuation
             tokens.append(word_to_token(word[:-1]))
-            tokens.append(word_to_token(','))
+            tokens.append(word_to_token(word[-1:]))
         else:
             tokens.append(word_to_token(word))
     return tokens
