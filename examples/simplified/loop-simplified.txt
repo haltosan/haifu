@@ -3,10 +3,14 @@ print 1
 goto loop
 
 
-
+- program -
 1  # print val
 3 #loop jump back
 fall #loop start
 count
 rise
 demote
+
+
+Since the delegate can't be higher than the bureaucrat,
+the delegate automatically drops at the start of the loop
