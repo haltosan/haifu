@@ -1,7 +1,21 @@
-print = :
+- pseudo code -
+function print(){
     1
     count
     heaven
+}
+print()
+print()
+print()
+
+
+- program -
+/
+    print
+    1
+    count
+    heaven
+/
 print
 print
 print

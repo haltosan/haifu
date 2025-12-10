@@ -1,3 +1,4 @@
+- pseudo code -
 loop:
 print 1
 goto loop
