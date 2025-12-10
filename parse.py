@@ -242,7 +242,7 @@ def parse(file_name:str) -> typing.List[haifu_common.Token]:
     :raises FileNotFoundError: if input file does not exist
     :returns: list of tokens
     """
-    raw = read_file(file_name)
+    raw = read_file(file_name).lower()
 
     vulgar = find_vulgar(raw)
     if vulgar is not None:
