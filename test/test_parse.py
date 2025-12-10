@@ -252,6 +252,28 @@ class TestContract:
                            parse.ParserToken(haifu_common.TokenType.COMMA),
                            parse.ParserToken(haifu_common.TokenType.NEGATIVE)], out
 
+        def test_make_tokens_punc(self):
+            raw = ('ascend - ascend rise.\n'
+                   'ascend ascend! ascend? two!\n'
+                   'ascend, twenty-one.')
+            out = parse.make_tokens(raw)
+            assert out == [parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.INT, 2),
+                           parse.ParserToken(haifu_common.TokenType.PUNC),
+                           parse.ParserToken(haifu_common.TokenType.RISE),
+                           parse.ParserToken(haifu_common.TokenType.COMMA),
+                           parse.ParserToken(haifu_common.TokenType.INT, 21),
+                           parse.ParserToken(haifu_common.TokenType.PUNC)], out
+
         def test_is_balanced_negative(self):
             program = [parse.ParserToken(haifu_common.TokenType.INT, 1),
                        parse.ParserToken(haifu_common.TokenType.COMMA),
