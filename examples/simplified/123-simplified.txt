@@ -1,25 +1,30 @@
-nirvana
-number
-up
-number
-up
-number
-3
-2
+- program -
 1
+2
+3
+number
+up
+number
+up
+number
 
--execution-
+
+- execution -
 	b[1] d[1]
 nop b[2] d[1]
 nop b[3] d[1]
 num	b[n] d[1]
 				1
 up	b[u] d[2]
-	,b-1 is number so default to up 1,
+	b-1 is not a number so default to up 1,
 num	b[n] d[2]
 				2
 up	b[u] d[3]
-	,b-1 is number so default to up 1,
+	b-1 is not a number so default to up 1,
 num	b[n] d[3]
 				3
-nirvana
+
+
+The haifu will be reversed.
+The execution includes the current action, what the bureaucrat is pointing at (b),
+what the delegate is pointing at (b), and what the output is.
