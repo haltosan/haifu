@@ -205,6 +205,13 @@ class TestContract:
                     'the final test line')
             assert parse.count_haiku(text) == [6, 7, 5], 'Stanza is 6-7-5'
 
+        def test_count_haiku_punc(self):
+            raw = ('longer - longer. test,\n'
+                   'longer longer! longer? test!\n'
+                   'longer, twenty-one.')
+            assert parse.count_haiku(raw) == [5, 7, 5], 'Stanza is 5-7-5'
+
+
         def test_make_tokens_basic(self):
             raw = 'heaven more reduce petal up descend hear speak some'
             out = parse.make_tokens(raw)
