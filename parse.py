@@ -23,7 +23,12 @@ vulgar_words_partial = ['fuck', 'cunt', 'cock', 'pussy', 'penis']
 c_dict = cmudict.dict()
 
 def count(w: str) -> int:
-    """Count syllables in a word"""
+    """
+    Count syllables in a word
+
+    :param w: input word
+    :return: number of syllables in w
+    """
     # based on https://datascience.stackexchange.com/a/24865
     if w in c_dict:
         return [len(list(y for y in x if y[-1].isdigit())) for x in c_dict[w.lower()]][0]
@@ -31,12 +36,10 @@ def count(w: str) -> int:
 
 def count_line(line:str) -> typing.List[int]:
     """
-    Docstring for count_line TODO
+    Count syllables in a line
     
-    :param line: Description
-    :type line: str
-    :return: Description
-    :rtype: List[int]
+    :param line: line of text
+    :return: list of syllable counts per word
     """
     line = line.replace('-', ' ')  # split hyphenated words
     line = ''.join([i for i in line if i.isalpha() or i == ' '])  # filter for alpha characters
@@ -45,7 +48,7 @@ def count_line(line:str) -> typing.List[int]:
 
 class ParserToken:
     """
-    Docstring for ParserToken TODO
+    Token used in parser layer
     """
     t:TokenType = None
     value:typing.Any = None
@@ -102,12 +105,10 @@ elements = [wood, fire, earth, metal, water]
 
 def get_element_type(word:str) -> ElementType:
     """
-    Docstring for get_element_type TODO
+    Determine element type for a word
     
-    :param word: Description
-    :type word: str
-    :return: Description
-    :rtype: ElementType
+    :param word: program word
+    :return: element type of w
     """
     for element in elements:
         if word in element[1]:
@@ -117,12 +118,10 @@ def get_element_type(word:str) -> ElementType:
 
 def word_to_token(word:str) -> ParserToken:
     """
-    Docstring for word_to_token TODO
+    Convert program word to haifu token
     
-    :param word: Description
-    :type word: str
-    :return: Description
-    :rtype: ParserToken
+    :param word: program word
+    :return: token to be used in parser layer
     """
     if word == ',':
         return ParserToken(TokenType.COMMA)

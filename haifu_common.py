@@ -8,7 +8,7 @@ from enum import Enum
 
 class TokenType(Enum):
     """
-    Docstring for TokenType TODO
+    Opcode for tokens
     """
     HEAVEN = 0
     PROMOTE = 1
@@ -36,7 +36,7 @@ class TokenType(Enum):
 
 class ElementType(Enum):
     """
-    Docstring for ElementType TODO
+    Element type for variable tokens/structs
     """
     WOOD = 0
     FIRE = 1
@@ -47,7 +47,7 @@ class ElementType(Enum):
 
 class Token:
     """
-    Docstring for Token TODO
+    Tokens to be used in the interpreter layer
     """
     t: TokenType = None
     value:typing.Any = None
@@ -67,7 +67,7 @@ class Token:
 
 class VariableToken:
     """
-    Docstring for VariableToken TODO
+    Value for tokens that are variables
     """
     name:str = None
     init_element:ElementType = None

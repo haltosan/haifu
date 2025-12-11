@@ -28,7 +28,7 @@ RAND_MAX = 2**32
 
 class ElementRelationship(Enum):
     """
-    Docstring for ElementRelationship TODO
+    Enum signifying how 2 elements are related
     """
     CREATE = 0
     DESTROY = 1
@@ -39,7 +39,7 @@ class ElementRelationship(Enum):
 
 class VariableStruct:
     """
-    Docstring for VariableStruct TODO
+    How variables are stored in the data dict
     """
     element = None
     value = None
@@ -54,12 +54,10 @@ input_buffer: typing.List[str] = []
 
 def init_rand(x: typing.Any) -> typing.Any:
     """
-    Docstring for init_rand TODO
+    Init numbers that are possibly rand
     
-    :param x: Description
-    :type x: typing.Any
-    :return: Description
-    :rtype: Any
+    :param x: input token
+    :return: A random value if x is RAND, else x
     """
     if isinstance(x, Token) and x.t == TokenType.RAND:
         return randint(RAND_MIN, RAND_MAX)
@@ -67,12 +65,10 @@ def init_rand(x: typing.Any) -> typing.Any:
 
 def strive_num(x: typing.Union[int, float]) -> int:
     """
-    Docstring for strive_num TODO
+    Calculate what the number is striving for
     
-    :param x: Description
-    :type x: typing.Union[int, float]
-    :return: Description
-    :rtype: int
+    :param x: number
+    :return: what x is striving for
     """
     if isinstance(x, int):
         if x < 0:
@@ -84,12 +80,10 @@ def strive_num(x: typing.Union[int, float]) -> int:
 
 def yin_or_yang(x: typing.Any) -> typing.Optional[int]:
     """
-    Docstring for yin_or_yang TODO
+    Determine the yin or yang quality of the input
     
-    :param x: Description
-    :type x: typing.Any
-    :return: Description
-    :rtype: int | None
+    :param x: input value
+    :return: optionally YIN/YANG if x is a number
     """
     x = init_rand(x)
     if not isinstance(x, (int, float)):
@@ -101,16 +95,12 @@ def yin_or_yang(x: typing.Any) -> typing.Optional[int]:
 def element_relationship(element_a: ElementType, element_b: ElementType =None, relationship_type:ElementRelationship=None) -> typing.Optional[typing.Union[
     ElementType, ElementRelationship]]:
     """
-    Docstring for element_relationship TODO
+    Interface with elemental relationships
     
-    :param element_a: Description
-    :type element_a: ElementType
-    :param element_b: Description
-    :type element_b: ElementType
-    :param relationship_type: Description
-    :type relationship_type: ElementRelationship
-    :return: Description
-    :rtype: ElementType | ElementRelationship | None
+    :param element_a: element a
+    :param element_b: optional element b
+    :param relationship_type: optional element relationship
+    :return: if a and relationship is specified, return element b; else return relationship between a and b
     """
     create_relationship = {
         ElementType.EARTH: ElementType.METAL,
@@ -159,14 +149,11 @@ def element_relationship(element_a: ElementType, element_b: ElementType =None, r
 
 def op(a: Token, b: Token) -> typing.Optional[typing.Union[float, int]]:
     """
-    Docstring for op TODO
+    Operate instruction
     
-    :param a: Description
-    :type a: Token
-    :param b: Description
-    :type b: Token
-    :return: Description
-    :rtype: float | int | None
+    :param a: variable token a
+    :param b: variable token b
+    :return: result of the operation between a and b
     """
     try:
         a_name:str = a.value.name
@@ -205,10 +192,10 @@ def op(a: Token, b: Token) -> typing.Optional[typing.Union[float, int]]:
 
 def run(bureaucracy, debug=False):
     """
-    Docstring for run TODO
+    Interpret a program
     
-    :param bureaucracy: Description
-    :param debug: Description
+    :param bureaucracy: input program
+    :param debug: if debug information should be outputted
     """
     global data, input_buffer
 
