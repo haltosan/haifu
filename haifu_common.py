@@ -1,5 +1,5 @@
 """
-TODO
+Classes shared between layers
 """
 
 import typing

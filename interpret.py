@@ -1,5 +1,7 @@
 """
-Docstring for interpret TODO
+The interpreter layer
+
+This is responsible for program behavior
 """
 
 import select

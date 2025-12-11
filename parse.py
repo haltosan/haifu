@@ -1,5 +1,8 @@
 """
-TODO docstring
+The parser layer
+
+Translates the user level input to tokens to be interpreted
+Also manages syntax validation
 """
 
 import typing

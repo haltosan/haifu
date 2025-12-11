@@ -1,17 +1,17 @@
 """
-Docstring for haifu TODO
+The main entry point for the project
+
+Error codes:
+0 - success
+1 - improper argument format
+2 - input file does not exist
+3 - syntax error
 """
 
 import sys
 
 import parse
 import interpret
-
-# Error codes:
-# 0 - no problem
-# 1 - improper argument format
-# 2 - input file does not exist
-# 3 - syntax error
 
 
 if __name__ == '__main__':

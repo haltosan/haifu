@@ -1,5 +1,5 @@
 """
-Docstring for test.test_interpret TODO
+Testsuite for interpret.py
 """
 
 import interpret
