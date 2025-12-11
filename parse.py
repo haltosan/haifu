@@ -1,5 +1,8 @@
-import typing
+"""
+TODO docstring
+"""
 
+import typing
 import cmudict
 import number_parser
 from syllables import estimate
@@ -24,12 +27,23 @@ def count(w: str) -> int:
     return estimate(w)
 
 def count_line(line:str) -> typing.List[int]:
+    """
+    Docstring for count_line TODO
+    
+    :param line: Description
+    :type line: str
+    :return: Description
+    :rtype: List[int]
+    """
     line = line.replace('-', ' ')  # split hyphenated words
     line = ''.join([i for i in line if i.isalpha() or i == ' '])  # filter for alpha characters
     words = [i for i in line.split(' ') if i != '']  # remove empty words from syllable count
     return [count(word) for word in words]
 
 class ParserToken:
+    """
+    Docstring for ParserToken TODO
+    """
     t:TokenType = None
     value:typing.Any = None
 
@@ -69,7 +83,11 @@ negative_token = [TokenType.NEGATIVE, ['negative', 'not', 'deny']]
 operate_token = [TokenType.OPERATE, ['operate', 'examine', 'study']]
 rand_token = [TokenType.RAND, ['some', 'few', 'many']]
 
-basic_words = [heaven_token, promote_token, demote_token, blossom_token, rise_token, fall_token, listen_token, speak_token, count_token, create_token, destroy_token, fear_token, love_token, become_token, like_token, negative_token, operate_token, rand_token]
+basic_words = [heaven_token, promote_token, demote_token, blossom_token, 
+               rise_token, fall_token, listen_token, speak_token, count_token,
+               create_token, destroy_token, fear_token, love_token, 
+               become_token, like_token, negative_token, operate_token, 
+               rand_token]
 
 wood = [ElementType.WOOD, ['wood', 'tree', 'grass', 'cherry', 'oak']]
 fire = [ElementType.FIRE, ['fire', 'flame', 'ash', 'smoke', 'embers']]
@@ -80,6 +98,14 @@ elements = [wood, fire, earth, metal, water]
 
 
 def get_element_type(word:str) -> ElementType:
+    """
+    Docstring for get_element_type TODO
+    
+    :param word: Description
+    :type word: str
+    :return: Description
+    :rtype: ElementType
+    """
     for element in elements:
         if word in element[1]:
             return element[0]
@@ -87,6 +113,14 @@ def get_element_type(word:str) -> ElementType:
 
 
 def word_to_token(word:str) -> ParserToken:
+    """
+    Docstring for word_to_token TODO
+    
+    :param word: Description
+    :type word: str
+    :return: Description
+    :rtype: ParserToken
+    """
     if word == ',':
         return ParserToken(TokenType.COMMA)
     word = word.lower()
@@ -117,7 +151,7 @@ def read_file(file_name:str) -> str:
     :param file_name: name of file containing program
     :returns: string of file content, raw
     """
-    with open(file_name, 'r') as file:
+    with open(file_name, mode='r', encoding='UTF-8') as file:
         ret = file.read()
     return ret
 

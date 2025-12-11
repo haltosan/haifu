@@ -1,5 +1,8 @@
-import pathlib
+"""
+Docstring for test.test_parse TODO
+"""
 
+import pathlib
 import pytest
 
 import haifu_common
@@ -11,7 +14,7 @@ class TestContract:
         tmp_file = '../tmp.haifu'
 
         def write(self, text):
-            with open(self.tmp_file, 'w') as file:
+            with open(self.tmp_file, mode='w', encoding='UTF-8') as file:
                 file.write(text)
 
         def raw_to_out(self, raw):
@@ -20,7 +23,7 @@ class TestContract:
 
         @pytest.fixture(autouse=True)
         def cleanup(self):
-            open(self.tmp_file, 'w').close()
+            open(self.tmp_file, mode='w', encoding='UTF-8').close()
 
         def test_parse_just_exit(self):
             raw = ('heaven, test test test\n'
@@ -127,7 +130,7 @@ class TestContract:
                     'sed do eiusmod tempor incididunt ut labore et dolore magna '
                     'aliqua. Ut enim ad minim veniam, quis nostrud exercitation '
                     'ullamco laboris nisi ut aliquip ex ea commodo consequat.')
-            with open(file_name, 'w') as file:
+            with open(file_name, mode='w', encoding='UTF-8') as file:
                 file.write(text)
             assert parse.read_file(file_name) == text, 'Text does not match'
             pathlib.Path(file_name).unlink()

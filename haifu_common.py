@@ -1,8 +1,15 @@
+"""
+TODO
+"""
+
 import typing
 from enum import Enum
 
 
 class TokenType(Enum):
+    """
+    Docstring for TokenType TODO
+    """
     HEAVEN = 0
     PROMOTE = 1
     DEMOTE = 2
@@ -28,6 +35,9 @@ class TokenType(Enum):
 
 
 class ElementType(Enum):
+    """
+    Docstring for ElementType TODO
+    """
     WOOD = 0
     FIRE = 1
     EARTH = 2
@@ -36,6 +46,9 @@ class ElementType(Enum):
 
 
 class Token:
+    """
+    Docstring for Token TODO
+    """
     t: TokenType = None
     value:typing.Any = None
 
@@ -53,6 +66,9 @@ class Token:
 
 
 class VariableToken:
+    """
+    Docstring for VariableToken TODO
+    """
     name:str = None
     init_element:ElementType = None
 

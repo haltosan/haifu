@@ -1,3 +1,7 @@
+"""
+Docstring for interpret TODO
+"""
+
 import select
 from math import ceil, floor
 from enum import Enum
@@ -21,6 +25,9 @@ RAND_MAX = 2**32
 
 
 class ElementRelationship(Enum):
+    """
+    Docstring for ElementRelationship TODO
+    """
     CREATE = 0
     DESTROY = 1
     FEAR = 2
@@ -29,6 +36,9 @@ class ElementRelationship(Enum):
 
 
 class VariableStruct:
+    """
+    Docstring for VariableStruct TODO
+    """
     element = None
     value = None
 
@@ -41,12 +51,28 @@ data: typing.Dict[str, VariableStruct] = dict()
 input_buffer: typing.List[str] = []
 
 def init_rand(x: typing.Any) -> typing.Any:
-    if type(x) is Token and x.t == TokenType.RAND:
-        x = randint(RAND_MIN, RAND_MAX)
+    """
+    Docstring for init_rand TODO
+    
+    :param x: Description
+    :type x: typing.Any
+    :return: Description
+    :rtype: Any
+    """
+    if isinstance(x, Token) and x.t == TokenType.RAND:
+        return randint(RAND_MIN, RAND_MAX)
     return x
 
 def strive_num(x: typing.Union[int, float]) -> int:
-    if type(x) is int:
+    """
+    Docstring for strive_num TODO
+    
+    :param x: Description
+    :type x: typing.Union[int, float]
+    :return: Description
+    :rtype: int
+    """
+    if isinstance(x, int):
         if x < 0:
             return x - 1
         return x + 1
@@ -55,15 +81,35 @@ def strive_num(x: typing.Union[int, float]) -> int:
     return floor(x)
 
 def yin_or_yang(x: typing.Any) -> typing.Optional[int]:
+    """
+    Docstring for yin_or_yang TODO
+    
+    :param x: Description
+    :type x: typing.Any
+    :return: Description
+    :rtype: int | None
+    """
     x = init_rand(x)
     if not isinstance(x, (int, float)):
         return None
-    if type(x) is float:
+    if isinstance(x, float):
         x = strive_num(x)
     return YIN if x % 2 == 0 else YANG
 
 def element_relationship(element_a: ElementType, element_b: ElementType =None, relationship_type:ElementRelationship=None) -> typing.Optional[typing.Union[
     ElementType, ElementRelationship]]:
+    """
+    Docstring for element_relationship TODO
+    
+    :param element_a: Description
+    :type element_a: ElementType
+    :param element_b: Description
+    :type element_b: ElementType
+    :param relationship_type: Description
+    :type relationship_type: ElementRelationship
+    :return: Description
+    :rtype: ElementType | ElementRelationship | None
+    """
     create_relationship = {
         ElementType.EARTH: ElementType.METAL,
         ElementType.METAL: ElementType.WATER,
@@ -110,7 +156,16 @@ def element_relationship(element_a: ElementType, element_b: ElementType =None, r
         return None
 
 def op(a: Token, b: Token) -> typing.Optional[typing.Union[float, int]]:
-    global data
+    """
+    Docstring for op TODO
+    
+    :param a: Description
+    :type a: Token
+    :param b: Description
+    :type b: Token
+    :return: Description
+    :rtype: float | int | None
+    """
     try:
         a_name:str = a.value.name
         b_name:str = b.value.name
@@ -147,7 +202,12 @@ def op(a: Token, b: Token) -> typing.Optional[typing.Union[float, int]]:
             return YIN
 
 def run(bureaucracy, debug=False):
-    """expect program of form [lowest, ... highest]"""
+    """
+    Docstring for run TODO
+    
+    :param bureaucracy: Description
+    :param debug: Description
+    """
     global data, input_buffer
 
     bureaucrat = -1  # deal with fence posting
@@ -430,5 +490,5 @@ def run(bureaucracy, debug=False):
                 value:typing.Any = init_rand(var.value)
                 if isinstance(value, (int, float)):
                     pass
-                elif type(value) is list:
+                elif isinstance(value, list):
                     run(value, debug)
