@@ -1,3 +1,9 @@
+"""
+The interpreter layer
+
+This is responsible for program behavior
+"""
+
 import select
 from math import ceil, floor
 from enum import Enum
@@ -9,18 +15,17 @@ import haifu_common
 import parse
 from haifu_common import TokenType, ElementType, Token, VariableToken
 
-# TODO use typing hints properly on everything
-# TODO use docstrings
-# TODO formatting
+YIN: int = 2
+YANG: int = 1
 
-YIN = 2
-YANG = 1
-
-RAND_MIN = 0
-RAND_MAX = 2**32
+RAND_MIN: int = 0
+RAND_MAX: int = 2**32
 
 
 class ElementRelationship(Enum):
+    """
+    Enum signifying how 2 elements are related
+    """
     CREATE = 0
     DESTROY = 1
     FEAR = 2
@@ -29,10 +34,13 @@ class ElementRelationship(Enum):
 
 
 class VariableStruct:
-    element = None
-    value = None
+    """
+    How variables are stored in the data dict
+    """
+    element: ElementType = None
+    value: typing.Any = None
 
-    def __init__(self, value, element):
+    def __init__(self, value: typing.Any, element: ElementType):
         self.element = element
         self.value = value
 
@@ -41,12 +49,24 @@ data: typing.Dict[str, VariableStruct] = dict()
 input_buffer: typing.List[str] = []
 
 def init_rand(x: typing.Any) -> typing.Any:
-    if type(x) is Token and x.t == TokenType.RAND:
-        x = randint(RAND_MIN, RAND_MAX)
+    """
+    Init numbers that are possibly rand
+    
+    :param x: input token
+    :return: A random value if x is RAND, else x
+    """
+    if isinstance(x, Token) and x.t == TokenType.RAND:
+        return randint(RAND_MIN, RAND_MAX)
     return x
 
 def strive_num(x: typing.Union[int, float]) -> int:
-    if type(x) is int:
+    """
+    Calculate what the number is striving for
+    
+    :param x: number
+    :return: what x is striving for
+    """
+    if isinstance(x, int):
         if x < 0:
             return x - 1
         return x + 1
@@ -55,15 +75,29 @@ def strive_num(x: typing.Union[int, float]) -> int:
     return floor(x)
 
 def yin_or_yang(x: typing.Any) -> typing.Optional[int]:
+    """
+    Determine the yin or yang quality of the input
+    
+    :param x: input value
+    :return: optionally YIN/YANG if x is a number
+    """
     x = init_rand(x)
     if not isinstance(x, (int, float)):
         return None
-    if type(x) is float:
+    if isinstance(x, float):
         x = strive_num(x)
     return YIN if x % 2 == 0 else YANG
 
 def element_relationship(element_a: ElementType, element_b: ElementType =None, relationship_type:ElementRelationship=None) -> typing.Optional[typing.Union[
     ElementType, ElementRelationship]]:
+    """
+    Interface with elemental relationships
+    
+    :param element_a: element a
+    :param element_b: optional element b
+    :param relationship_type: optional element relationship
+    :return: if a and relationship is specified, return element b; else return relationship between a and b
+    """
     create_relationship = {
         ElementType.EARTH: ElementType.METAL,
         ElementType.METAL: ElementType.WATER,
@@ -110,7 +144,13 @@ def element_relationship(element_a: ElementType, element_b: ElementType =None, r
         return None
 
 def op(a: Token, b: Token) -> typing.Optional[typing.Union[float, int]]:
-    global data
+    """
+    Operate instruction
+    
+    :param a: variable token a
+    :param b: variable token b
+    :return: result of the operation between a and b
+    """
     try:
         a_name:str = a.value.name
         b_name:str = b.value.name
@@ -146,8 +186,13 @@ def op(a: Token, b: Token) -> typing.Optional[typing.Union[float, int]]:
                 return YANG
             return YIN
 
-def run(bureaucracy, debug=False):
-    """expect program of form [lowest, ... highest]"""
+def run(bureaucracy: typing.List[Token], debug=False):
+    """
+    Interpret a program
+    
+    :param bureaucracy: input program
+    :param debug: if debug information should be outputted
+    """
     global data, input_buffer
 
     bureaucrat = -1  # deal with fence posting
@@ -430,5 +475,5 @@ def run(bureaucracy, debug=False):
                 value:typing.Any = init_rand(var.value)
                 if isinstance(value, (int, float)):
                     pass
-                elif type(value) is list:
+                elif isinstance(value, list):
                     run(value, debug)

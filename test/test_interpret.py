@@ -1,3 +1,7 @@
+"""
+Testsuite for interpret.py
+"""
+
 import interpret
 from haifu_common import TokenType, ElementType, Token, VariableToken
 

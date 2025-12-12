@@ -1,5 +1,11 @@
-import typing
+"""
+The parser layer
 
+Translates the user level input to tokens to be interpreted
+Also manages syntax validation
+"""
+
+import typing
 import cmudict
 import number_parser
 from syllables import estimate
@@ -8,36 +14,49 @@ import haifu_common
 import interpret
 from haifu_common import TokenType, ElementType, VariableToken
 
-
 # Reject only if the word is on its own (cumin does not get rejected)
-vulgar_words_full = ['cum', 'dick', 'bitch', 'ass', 'anal', 'shit']
+vulgar_words_full: typing.List[str] = ['cum', 'dick', 'bitch', 'ass', 'anal', 'shit']
 # Reject if the word appears in any word (fucker is rejected)
-vulgar_words_partial = ['fuck', 'cunt', 'cock', 'pussy', 'penis']
+vulgar_words_partial: typing.List[str] = ['fuck', 'cunt', 'cock', 'pussy', 'penis']
 
 c_dict = cmudict.dict()
 
 def count(w: str) -> int:
-    """Count syllables in a word"""
+    """
+    Count syllables in a word
+
+    :param w: input word
+    :return: number of syllables in w
+    """
     # based on https://datascience.stackexchange.com/a/24865
     if w in c_dict:
         return [len(list(y for y in x if y[-1].isdigit())) for x in c_dict[w.lower()]][0]
     return estimate(w)
 
-def count_line(line:str) -> typing.List[int]:
+def count_line(line: str) -> typing.List[int]:
+    """
+    Count syllables in a line
+    
+    :param line: line of text
+    :return: list of syllable counts per word
+    """
     line = line.replace('-', ' ')  # split hyphenated words
     line = ''.join([i for i in line if i.isalpha() or i == ' '])  # filter for alpha characters
     words = [i for i in line.split(' ') if i != '']  # remove empty words from syllable count
     return [count(word) for word in words]
 
 class ParserToken:
-    t:TokenType = None
-    value:typing.Any = None
+    """
+    Token used in parser layer
+    """
+    t: TokenType = None
+    value: typing.Any = None
 
-    def __init__(self, t, value=None):
+    def __init__(self, t: TokenType, value: typing.Any=None):
         self.t = t
         self.value = value
 
-    def __eq__(self, other):
+    def __eq__(self, other: typing.Any):
         if not isinstance(other, ParserToken):
             return NotImplemented
         return self.t == other.t and self.value == other.value
@@ -69,7 +88,11 @@ negative_token = [TokenType.NEGATIVE, ['negative', 'not', 'deny']]
 operate_token = [TokenType.OPERATE, ['operate', 'examine', 'study']]
 rand_token = [TokenType.RAND, ['some', 'few', 'many']]
 
-basic_words = [heaven_token, promote_token, demote_token, blossom_token, rise_token, fall_token, listen_token, speak_token, count_token, create_token, destroy_token, fear_token, love_token, become_token, like_token, negative_token, operate_token, rand_token]
+basic_words = [heaven_token, promote_token, demote_token, blossom_token, 
+               rise_token, fall_token, listen_token, speak_token, count_token,
+               create_token, destroy_token, fear_token, love_token, 
+               become_token, like_token, negative_token, operate_token, 
+               rand_token]
 
 wood = [ElementType.WOOD, ['wood', 'tree', 'grass', 'cherry', 'oak']]
 fire = [ElementType.FIRE, ['fire', 'flame', 'ash', 'smoke', 'embers']]
@@ -79,14 +102,26 @@ water = [ElementType.WATER, ['water', 'rain', 'snow', 'river', 'ice']]
 elements = [wood, fire, earth, metal, water]
 
 
-def get_element_type(word:str) -> ElementType:
+def get_element_type(word: str) -> ElementType:
+    """
+    Determine element type for a word
+    
+    :param word: program word
+    :return: element type of w
+    """
     for element in elements:
         if word in element[1]:
             return element[0]
     return ElementType.EARTH
 
 
-def word_to_token(word:str) -> ParserToken:
+def word_to_token(word: str) -> ParserToken:
+    """
+    Convert program word to haifu token
+    
+    :param word: program word
+    :return: token to be used in parser layer
+    """
     if word == ',':
         return ParserToken(TokenType.COMMA)
     word = word.lower()
@@ -110,18 +145,18 @@ def word_to_token(word:str) -> ParserToken:
     element_t = get_element_type(word)
     return ParserToken(TokenType.VAR, VariableToken(word, element_t))
 
-def read_file(file_name:str) -> str:
+def read_file(file_name: str) -> str:
     """
     Read input file and output text
 
     :param file_name: name of file containing program
     :returns: string of file content, raw
     """
-    with open(file_name, 'r') as file:
+    with open(file_name, mode='r', encoding='UTF-8') as file:
         ret = file.read()
     return ret
 
-def find_vulgar(raw:str) -> typing.Optional[str]:
+def find_vulgar(raw: str) -> typing.Optional[str]:
     """
     Validate a program doesn't contain vulgar words
 
@@ -137,7 +172,7 @@ def find_vulgar(raw:str) -> typing.Optional[str]:
             return word
     return None
 
-def make_stanzas(raw:str) -> typing.List[str]:
+def make_stanzas(raw: str) -> typing.List[str]:
     """
     Take raw file contents and produce a list of stanza strings
 
@@ -166,7 +201,7 @@ def make_stanzas(raw:str) -> typing.List[str]:
             buf = []
     return stanzas
 
-def count_haiku(stanza:str) -> typing.List[int]:
+def count_haiku(stanza: str) -> typing.List[int]:
     """
     Count syllables in haiku
 
@@ -178,7 +213,7 @@ def count_haiku(stanza:str) -> typing.List[int]:
     counts = [sum(i) for i in counts]
     return counts
 
-def make_tokens(raw_valid:str) -> typing.List[ParserToken]:
+def make_tokens(raw_valid: str) -> typing.List[ParserToken]:
     """
     Turn the syntactically valid raw text into a list of tokens
 
@@ -198,7 +233,7 @@ def make_tokens(raw_valid:str) -> typing.List[ParserToken]:
             tokens.append(word_to_token(word))
     return tokens
 
-def is_balanced(tokens:typing.List[ParserToken]) -> bool:
+def is_balanced(tokens: typing.List[ParserToken]) -> bool:
     """
     Validate a program has an identical number of yin and yang values
 
@@ -215,7 +250,7 @@ def is_balanced(tokens:typing.List[ParserToken]) -> bool:
                 yang += 1
     return yin == yang
 
-def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[haifu_common.Token]:
+def remove_comments(tokens: typing.List[ParserToken]) -> typing.List[haifu_common.Token]:
     """
     Remove comments from a program
 
@@ -233,7 +268,7 @@ def remove_comments(tokens:typing.List[ParserToken]) -> typing.List[haifu_common
                 new_tokens.append(t)
     return new_tokens
 
-def parse(file_name:str) -> typing.List[haifu_common.Token]:
+def parse(file_name: str) -> typing.List[haifu_common.Token]:
     """
     Given a filename, produce the tokens of that program
 
@@ -260,4 +295,3 @@ def parse(file_name:str) -> typing.List[haifu_common.Token]:
     if not is_balanced(tokens):
         raise SyntaxError('Yin and yang are not balanced')
     return remove_comments(tokens)[::-1]  # programs are reversed
-

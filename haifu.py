@@ -1,20 +1,24 @@
-import parse
-import interpret
-import sys
-
 """
+The main entry point for the project
+
 Error codes:
-0 - no problem
+0 - success
 1 - improper argument format
 2 - input file does not exist
 3 - syntax error
 """
 
+import sys
+
+import parse
+import interpret
+
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print('Usage:\n', sys.argv[0], 'file_name', '[debug=0|1]')
         exit(1)
-    file_name = sys.argv[1]
+    file_name: str = sys.argv[1]
     debug = False
     if len(sys.argv) > 2:
         debug = sys.argv[2]
