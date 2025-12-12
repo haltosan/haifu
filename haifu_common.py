@@ -50,13 +50,13 @@ class Token:
     Tokens to be used in the interpreter layer
     """
     t: TokenType = None
-    value:typing.Any = None
+    value: typing.Any = None
 
-    def __init__(self, t, value=None):
+    def __init__(self, t: TokenType, value: typing.Any=None):
         self.t = t
         self.value = value
 
-    def __eq__(self, other):
+    def __eq__(self, other: typing.Any):
         if not isinstance(other, Token):
             return NotImplemented
         return self.t == other.t and self.value == other.value
@@ -69,14 +69,14 @@ class VariableToken:
     """
     Value for tokens that are variables
     """
-    name:str = None
-    init_element:ElementType = None
+    name: str = None
+    init_element: ElementType = None
 
-    def __init__(self, name, init_element:ElementType=ElementType.EARTH):
+    def __init__(self, name: str, init_element: ElementType=ElementType.EARTH):
         self.name = name
         self.init_element = init_element
 
-    def __eq__(self, other):
+    def __eq__(self, other: typing.Any):
         if not isinstance(other, VariableToken):
             return NotImplemented
         return self.name == other.name and self.init_element == other.init_element

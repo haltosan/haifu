@@ -15,15 +15,11 @@ import haifu_common
 import parse
 from haifu_common import TokenType, ElementType, Token, VariableToken
 
-# TODO use typing hints properly on everything
-# TODO use docstrings
-# TODO formatting
+YIN: int = 2
+YANG: int = 1
 
-YIN = 2
-YANG = 1
-
-RAND_MIN = 0
-RAND_MAX = 2**32
+RAND_MIN: int = 0
+RAND_MAX: int = 2**32
 
 
 class ElementRelationship(Enum):
@@ -41,10 +37,10 @@ class VariableStruct:
     """
     How variables are stored in the data dict
     """
-    element = None
-    value = None
+    element: ElementType = None
+    value: typing.Any = None
 
-    def __init__(self, value, element):
+    def __init__(self, value: typing.Any, element: ElementType):
         self.element = element
         self.value = value
 
@@ -190,7 +186,7 @@ def op(a: Token, b: Token) -> typing.Optional[typing.Union[float, int]]:
                 return YANG
             return YIN
 
-def run(bureaucracy, debug=False):
+def run(bureaucracy: typing.List[Token], debug=False):
     """
     Interpret a program
     
