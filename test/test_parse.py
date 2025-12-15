@@ -319,4 +319,14 @@ class TestLineCoverage:
         pass
 
     class TestInternals:
-        pass
+        def test_count_using_estimate(self):
+            word = 'floopy'
+            assert parse.count(word) == 2, 'Word has approximately 2 syllables'
+
+        def test_parser_token_eq(self):
+            p_token = parse.ParserToken(haifu_common.TokenType.PUNC)
+            assert p_token != '-'
+
+        def test_parse_token_repr(self):
+            p_token = parse.ParserToken(haifu_common.TokenType.PUNC)
+            assert str(p_token) == 'ParserToken(t=\'TokenType.PUNC\', value=\'None\')'

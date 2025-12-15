@@ -46,7 +46,6 @@ class VariableStruct:
 
 
 data: typing.Dict[str, VariableStruct] = dict()
-input_buffer: typing.List[str] = []
 
 def init_rand(x: typing.Any) -> typing.Any:
     """
@@ -193,7 +192,8 @@ def run(bureaucracy: typing.List[Token], debug=False):
     :param bureaucracy: input program
     :param debug: if debug information should be outputted
     """
-    global data, input_buffer
+    global data
+    input_buffer: typing.List[str] = []
 
     bureaucrat = -1  # deal with fence posting
     delegate = 0
@@ -295,23 +295,21 @@ def run(bureaucracy: typing.List[Token], debug=False):
 
             case TokenType.LISTEN:
                 dprint('listen')
+                raw = ''
                 if len(input_buffer) > 0:
                     raw = input_buffer.pop(0)
-                # from https://stackoverflow.com/a/3763257
-                elif sys.stdin.isatty() or \
-                    select.select([sys.stdin, ], [], [])[0]:
-                    # there is an active tty connected
-                    # or there is currently data in stdin
-                    line = input().split(' ')
-                    raw = line.pop(0)
-                    input_buffer = input_buffer + line
                 else:
-                    # no data, move rung to bottom
-                    rung_above = bureaucracy.pop(bureaucrat+1)
-                    bureaucracy.insert(0, rung_above)
-                    bureaucrat += 1
-                    delegate += 1
-                    continue
+                    try:
+                        line = input().split(' ')
+                        raw = line.pop(0)
+                        input_buffer = input_buffer + line
+                    except EOFError:
+                        # no data, move rung to bottom
+                        rung_above = bureaucracy.pop(bureaucrat+1)
+                        bureaucracy.insert(0, rung_above)
+                        bureaucrat += 1
+                        delegate += 1
+                        continue
                 parse_token = parse.word_to_token(raw)
                 if parse_token.t == haifu_common.TokenType.COMMA:
                     continue

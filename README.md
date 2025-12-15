@@ -64,6 +64,16 @@ source .venv/bin/activate
 python3 -m pytest
 ```
 
+To view coverage data, running the `test/coverage.sh` script (on platforms with bash) will generate an html coverage 
+report.
+```shell
+cd test
+chmod +x coverage.sh
+./coverage.sh
+# to view report
+open ../htmlcov/index.html
+```
+
 ## Interacting with the libraries
 The remaining python files can be imported to get lower level functionality:
 - `haifu_common.py` is a set of common data structures
