@@ -254,6 +254,11 @@ clamping = [Token(TokenType.VAR, VariableToken('var')),
             Token(TokenType.RISE),
             Token(TokenType.DEMOTE)]
 
+listen = [Token(TokenType.LISTEN),
+          Token(TokenType.LISTEN),
+          Token(TokenType.FALL),
+          Token(TokenType.COUNT)]
+
 
 class TestRun:
     def test_run_just_exit(self, capsys):
@@ -324,6 +329,19 @@ class TestRun:
         out, err = capsys.readouterr()
         assert out == '', err
 
+    def test_run_listen(self, capsys, monkeypatch):
+        monkeypatch.setattr('builtins.input', lambda: '123 , 123')
+        interpret.run(listen, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '123', err
+
+    def test_run_listen_eof(self, capsys, monkeypatch):
+        def eof():
+            raise EOFError
+        monkeypatch.setattr('builtins.input', lambda: eof())
+        interpret.run(listen, debug=True)
+        out, err = capsys.readouterr()
+        assert out == '', err
 
 class TestInternal:
     def test_strive_num(self):
@@ -355,3 +373,17 @@ class TestInternal:
         a = interpret.init_rand(Token(TokenType.RAND))
         b = interpret.init_rand(Token(TokenType.RAND))
         assert a != b, 'Random values likely are not the same'
+
+
+class TestLineCoverage:
+    def test_compare_tokens(self):
+        a = Token(TokenType.PUNC)
+        assert a != 'PUNC'
+
+    def test_token_to_str(self):
+        a = Token(TokenType.PUNC)
+        assert str(a) == 'Token(t=\'TokenType.PUNC\', value=\'None\')'
+
+    def test_compare_variable_token(self):
+        a = VariableToken('bogus')
+        assert a != 'bogus'
