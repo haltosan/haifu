@@ -13,6 +13,17 @@ import sys
 import parse
 import interpret
 
+def run(file_name, debug):
+    try:
+        program = parse.parse(file_name)
+    except FileNotFoundError:
+        print('Input file does not exist')
+        exit(2)
+    except SyntaxError as e:
+        print('Syntax error', e.msg)
+        exit(3)
+
+    interpret.run(program, debug=debug)
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
@@ -30,14 +41,4 @@ if __name__ == '__main__':
             print('Improper argument format', sys.argv)
             print('Expected a \'0\' or \'1\' for debug')
             exit(1)
-
-    try:
-        program = parse.parse(file_name)
-    except FileNotFoundError:
-        print('Input file does not exist')
-        exit(2)
-    except SyntaxError as e:
-        print('Syntax error', e.msg)
-        exit(3)
-
-    interpret.run(program, debug=debug)
+    run(file_name, debug)
