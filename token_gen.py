@@ -6,8 +6,14 @@ from parse import ParserToken
 N = 14
 MID = 3
 
+offsets = {
+        'N-1' : N-1,
+        'N+1' : N+1,
+        'N+2' : N+2
+}
+
 jumps = {
-        '1t-1' : (2*N) + MID,
+        '1t-1' : 13,
         '1f-2' : (2*N) + MID + N,
         '2t-2' : (2*N) + MID
 }
@@ -40,6 +46,8 @@ def shortcut(file_name, jumps=jumps, N=N, MID=MID):
 
     x = open(file_name, 'r')
     raw = x.read()
+    for offset in offsets:
+        raw = raw.replace(offset, str(offsets[offset]))
     raw = raw.replace('N', str(N))
     lines = raw.split('\n')[:-1]
     x.close()
@@ -66,3 +74,8 @@ def shortcut(file_name, jumps=jumps, N=N, MID=MID):
                     element_t = parse.get_element_type(line)
                     tokens.append(ParserToken(TokenType.VAR, VariableToken(line, element_t)))
     return tokens
+
+if __name__ == '__main__':
+    import sys
+    for i in shortcut(sys.argv[1]):
+        print(i)
