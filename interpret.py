@@ -185,7 +185,7 @@ def op(a: Token, b: Token) -> typing.Optional[typing.Union[float, int]]:
                 return YANG
             return YIN
 
-def run(bureaucracy: typing.List[Token], debug=False):
+def run(bureaucracy: typing.List[Token], debug=False, debug2=False):
     """
     Interpret a program
     
@@ -200,6 +200,9 @@ def run(bureaucracy: typing.List[Token], debug=False):
     def dprint(txt):
         if debug:
             print('\t', txt, file=sys.stderr)
+    def d2print(txt):
+        if debug2:
+            print('\t\t', txt, file=sys.stderr)
 
     while bureaucrat < len(bureaucracy):
         bureaucrat += 1
@@ -212,6 +215,8 @@ def run(bureaucracy: typing.List[Token], debug=False):
         if bureaucrat >= len(bureaucracy):
             return
         rung: Token = bureaucracy[bureaucrat]
+        d2print('b' + str(bureaucrat) + '  ' + str(rung))
+        d2print('d' + str(delegate) + '  ' + str(bureaucracy[delegate]))
         match rung.t:
             case TokenType.HEAVEN:
                 dprint('halt')
@@ -404,12 +409,14 @@ def run(bureaucracy: typing.List[Token], debug=False):
                     match d_rung.t:
                         case TokenType.INT:
                             data[change_var_name].value = d_rung.value
+                            d2print(change_var_name + ' = ' + str(d_rung.value))
                             break
                         case TokenType.VAR:
                             d_rung_var_name:str = d_rung.value.name
                             value = init_rand(data[d_rung_var_name].value)
                             if isinstance(value, (int, float)):
                                 data[change_var_name].value = value
+                                d2print(change_var_name + ' = ' + str(value))
                                 break
                     search -= 1
                 if search >= 0:
