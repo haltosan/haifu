@@ -49,9 +49,6 @@ def shortcut(file_name, jumps=jumps, N=N, MID=MID):
         # special macros
         if line in jumps:
             tokens.append(ParserToken(TokenType.INT, jumps[line]))
-        elif line == '..'+str(N)+'..':
-            for i in range(N):
-                tokens.append(NOP)
         elif 'nop-' in line:
             for i in range(int(line.split('-')[-1])):
                 tokens.append(NOP)
