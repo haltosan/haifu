@@ -80,3 +80,6 @@ class VariableToken:
         if not isinstance(other, VariableToken):
             return NotImplemented
         return self.name == other.name and self.init_element == other.init_element
+
+    def __repr__(self):
+        return f"VariableToken(name='{self.name}', init_element='{self.init_element}')"
