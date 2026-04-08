@@ -4,7 +4,6 @@ import parse
 from parse import ParserToken
 
 N = 15
-MID = 3
 
 offsets = {
         'N-1' : N-1,
@@ -12,11 +11,7 @@ offsets = {
         'N+2' : N+2
 }
 
-jumps = {
-        '1t-1' : 13+N+MID,
-        '1f-2' : (2*N) + MID + N - 1,
-        '2t-2' : 13+N+MID
-}
+jumps = {}
 
 NOP = ParserToken(TokenType.INT, 1)
 
@@ -42,7 +37,7 @@ lookup = {
 }
 
 
-def shortcut(file_name, jumps=jumps, N=N, MID=MID):
+def shortcut(file_name, jumps=jumps, N=N):
 
     x = open(file_name, 'r')
     raw = x.read()
