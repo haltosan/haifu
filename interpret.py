@@ -481,4 +481,4 @@ def run(bureaucracy: typing.List[Token], debug=False, debug2=False):
                 if isinstance(value, (int, float)):
                     pass
                 elif isinstance(value, list):
-                    run(value, debug)
+                    run(value, debug=debug, debug2=debug)
