@@ -3,7 +3,7 @@ from haifu_common import TokenType, ElementType, VariableToken
 import parse
 from parse import ParserToken
 
-N = 14
+N = 15
 MID = 3
 
 offsets = {
@@ -13,9 +13,9 @@ offsets = {
 }
 
 jumps = {
-        '1t-1' : 13,
-        '1f-2' : (2*N) + MID + N,
-        '2t-2' : (2*N) + MID
+        '1t-1' : 13+N+MID,
+        '1f-2' : (2*N) + MID + N - 1,
+        '2t-2' : 13+N+MID
 }
 
 NOP = ParserToken(TokenType.INT, 1)
