@@ -313,6 +313,15 @@ class TestContract:
             result = parse.remove_comments(program)
             assert result == [haifu_common.Token(haifu_common.TokenType.PUNC)]
 
+        def test_word_to_token(self):
+            program = ['minus-one', 'two', 'minus-three']
+            answer = [parse.ParserToken(haifu_common.TokenType.INT, -1),
+                      parse.ParserToken(haifu_common.TokenType.INT, 2),
+                      parse.ParserToken(haifu_common.TokenType.INT, -3)]
+            result = [parse.word_to_token(i) for i in program]
+            for i in range(len(answer)):
+                assert answer[i] == result[i], 'Expected ' + str(answer[i]) + ' got ' + str(result[i])
+
 
 class TestLineCoverage:
     class TestParse:

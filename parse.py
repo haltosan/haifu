@@ -126,12 +126,17 @@ def word_to_token(word: str) -> ParserToken:
         return ParserToken(TokenType.COMMA)
     word = word.lower()
     # convert numbers
+    if 'minus-' in word:
+        sign = -1
+        word = word.replace('minus-', '')
+    else:
+        sign = 1
     word = number_parser.parse(word)  # convert number word to number literal
     if word in number_conversion:
         word = number_conversion[word]
     try:
         value = int(word)
-        return ParserToken(TokenType.INT, value)
+        return ParserToken(TokenType.INT, value * sign)
     except ValueError:
         pass
     # convert basic words
