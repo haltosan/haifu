@@ -462,7 +462,10 @@ def run(bureaucracy: typing.List[Token], debug=False, debug2=False):
                 while rung.t != TokenType.PUNC:
                     data_tmp.append(rung)
                     bureaucrat += 1
-                    rung: Token = bureaucracy[bureaucrat]
+                    try:
+                        rung: Token = bureaucracy[bureaucrat]
+                    except IndexError:
+                        raise RuntimeError('Punctuation not properly closed')
                 if len(data_tmp) == 1:
                     if data_tmp[0].t == TokenType.INT:
                         data_tmp = data_tmp[0].value
