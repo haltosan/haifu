@@ -11,6 +11,11 @@ jumps = {
 }
 
 
-tokens = token_gen.shortcut('turing.tokens', N=N, jumps=jumps)[::-1]  # program was input high->low
+tokens = token_gen.shortcut('examples/simplified/turing.tokens', N=N, jumps=jumps)[::-1]  # program was input high->low
+
+for i in tokens:
+    print(i)
+
+print('=' * 15)
 
 interpret.run(tokens, debug=True, debug2=True)
